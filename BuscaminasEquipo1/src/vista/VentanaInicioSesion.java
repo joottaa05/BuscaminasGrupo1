@@ -18,6 +18,7 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.SystemColor;
 
 public class VentanaInicioSesion extends JFrame {
 
@@ -44,7 +45,7 @@ public class VentanaInicioSesion extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 334, 184);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(252, 235, 184));
+		contentPane.setBackground(new Color(49, 63, 79));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -56,8 +57,8 @@ public class VentanaInicioSesion extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		JLabel lblNewLabel_2 = new JLabel("Buscaminas");
-		lblNewLabel_2.setForeground(new Color(66, 40, 6));
-		lblNewLabel_2.setBackground(Color.WHITE);
+		lblNewLabel_2.setForeground(new Color(18, 148, 254));
+		lblNewLabel_2.setBackground(SystemColor.inactiveCaptionBorder);
 		lblNewLabel_2.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.gridwidth = 3;
@@ -67,7 +68,7 @@ public class VentanaInicioSesion extends JFrame {
 		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		JLabel lblNewLabel = new JLabel("Usuario:");
-		lblNewLabel.setForeground(new Color(66, 40, 6));
+		lblNewLabel.setForeground(SystemColor.control);
 		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
@@ -78,7 +79,7 @@ public class VentanaInicioSesion extends JFrame {
 		
 		textField = new JTextField();
 		textField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		textField.setForeground(new Color(66, 40, 6));
+		textField.setForeground(new Color(49, 63, 79));
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -88,7 +89,7 @@ public class VentanaInicioSesion extends JFrame {
 		textField.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Dificultad:");
-		lblNewLabel_1.setForeground(new Color(66, 40, 6));
+		lblNewLabel_1.setForeground(SystemColor.control);
 		lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
@@ -99,7 +100,7 @@ public class VentanaInicioSesion extends JFrame {
 		
 		JComboBox comboBox = new JComboBox<>(new String[] { "Fácil", "Medio", "Difícil" });
 		comboBox.setBackground(Color.WHITE);
-		comboBox.setForeground(new Color(66, 40, 6));
+		comboBox.setForeground(new Color(49, 63, 79));
 		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
@@ -109,7 +110,7 @@ public class VentanaInicioSesion extends JFrame {
 		contentPane.add(comboBox, gbc_comboBox);
 		
 		JButton btnNewButton = new JButton("Jugar");
-		btnNewButton.setForeground(new Color(66, 40, 6));
+		btnNewButton.setForeground(new Color(49, 63, 79));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
