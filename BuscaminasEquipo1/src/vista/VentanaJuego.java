@@ -24,8 +24,8 @@ public class VentanaJuego extends JFrame {
 	private JLabel numeroMinas;
 	private JLabel dificultad;
 	private JLabel temporizador;
-	private int filas = Tablero.getFilas();
-	private int columnas = Tablero.getColumnas();
+	private int filas = ;
+	private int columnas = ;
 
 	/**
 	 * Launch the application.
@@ -46,7 +46,7 @@ public class VentanaJuego extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public VentanaJuego() {
+	public VentanaJuego(Tablero tablero) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
