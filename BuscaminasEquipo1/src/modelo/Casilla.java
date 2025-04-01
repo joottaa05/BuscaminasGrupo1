@@ -2,10 +2,18 @@ package modelo;
 
 public class Casilla {
 
-	private boolean casilla;
+	private boolean mina;
 
-	public Casilla(boolean casilla) {
-		this.casilla = casilla;
+	public Casilla(boolean mina) {
+		this.mina = mina;
+	}
+
+	public boolean isMina() {
+		return mina;
+	}
+
+	public void setMina(boolean mina) {
+		this.mina = mina;
 	}
 	
 	

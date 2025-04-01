@@ -1,10 +1,18 @@
 package controlador;
 
+import modelo.Casilla;
+import modelo.Dificultad;
+import modelo.Tablero;
+
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Tablero tablero = new Tablero(Dificultad.Intermedio);
 
+		tablero.generarTablero();
+		tablero.colocarMinas(tablero.getTablero());
+		tablero.mostrarTablero();
+		tablero.comprobarMinas();
 	}
-
 }

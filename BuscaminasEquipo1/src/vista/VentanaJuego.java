@@ -16,7 +16,9 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-
+import modelo.Casilla;
+import modelo.Dificultad;
+import modelo.Tablero;
 public class VentanaJuego extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -24,8 +26,7 @@ public class VentanaJuego extends JFrame {
 	private JLabel numeroMinas;
 	private JLabel dificultad;
 	private JLabel temporizador;
-	private int filas = ;
-	private int columnas = ;
+	protected static Tablero tablero = new Tablero(Dificultad.Dificil);
 
 	/**
 	 * Launch the application.
@@ -34,7 +35,7 @@ public class VentanaJuego extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					VentanaJuego frame = new VentanaJuego();
+					VentanaJuego frame = new VentanaJuego(tablero);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
