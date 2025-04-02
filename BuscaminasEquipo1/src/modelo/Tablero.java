@@ -76,6 +76,10 @@ public class Tablero {
 		
 	}
 
+	public Dificultad getDificultad() {
+		return dificultad;
+	}
+
 	public void mostrarTablero() {
 		for (int i = 0; i < tableroJuego.length; i++) {
 			for (int j = 0; j < tableroJuego[i].length; j++) {

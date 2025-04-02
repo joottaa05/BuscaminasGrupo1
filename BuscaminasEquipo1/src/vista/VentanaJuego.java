@@ -18,83 +18,100 @@ import modelo.Dificultad;
 import modelo.Tablero;
 
 public class VentanaJuego extends JFrame {
-    private static final long serialVersionUID = 1L;
-    private JPanel contentPane;
-    private JLabel numeroMinas;
-    private JLabel dificultad;
-    private JLabel temporizador;
-    private JButton[][] tableroInterfaz;
-    
-    public VentanaJuego(Tablero tablero) {
-        setTitle("Juego Buscaminas");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 600);
-        setLocationRelativeTo(null);
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JLabel numeroMinas;
+	private JLabel temporizador;
+	private JButton[][] tableroInterfaz;
+	private Tablero tablero = new Tablero(Dificultad.Dificil);
 
-        contentPane = new JPanel(new GridBagLayout());
-        setContentPane(contentPane);
+	public VentanaJuego() {
+		setTitle("Juego Buscaminas");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(600, 600);
+		setLocationRelativeTo(null);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0,0,0,0);
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
+		contentPane = new JPanel(new GridBagLayout());
+		setContentPane(contentPane);
 
-        int filas = tablero.getTablero().length;
-        int columnas = tablero.getTablero()[0].length;
-        tableroInterfaz = new JButton[filas][columnas];
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
 
+		tablero.generarTablero();
+		tablero.colocarMinas(tablero.getTablero());
+		int filas = tablero.getTablero().length;
+		int columnas = tablero.getTablero()[0].length;
+		tableroInterfaz = new JButton[filas][columnas];
 
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                tableroInterfaz[i][j] = new JButton();
-                tableroInterfaz[i][j].setFocusPainted(false);
-                tableroInterfaz[i][j].setBorder(BorderFactory.createEmptyBorder()); 
-                tableroInterfaz[i][j].setContentAreaFilled(false);
-                ImageIcon icono = tableroInicial("src/imagenes/blank.gif");
-                tableroInterfaz[i][j].setIcon(icono);
-                
-                final int x = i;
-                final int y = j;
-                int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
-                tableroInterfaz[i][j].addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        actualizarCeldas(x, y, numero);
-                    }
-                });
-                
-                gbc.gridx = j;
-                gbc.gridy = i + 1;
-                
-                contentPane.add(tableroInterfaz[i][j], gbc);
-            }
-        }
+		for (int i = 0; i < filas; i++) {
+			for (int j = 0; j < columnas; j++) {
+				tableroInicial(i, j);
 
-        
-        
-        
-        setVisible(true);
-        pack();
-    }
+				final int x = i;
+				final int y = j;
+				tableroInterfaz[i][j].addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
+						destaparCelda(x, y, numero);
+					}
+				});
 
-    public ImageIcon tableroInicial(String ruta) {
-    	ImageIcon icono = new ImageIcon(ruta);
-        Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        return new ImageIcon(imagen);
-    }
-    
-    public void actualizarCeldas(int i, int j, int numero) {
-    	String fotoSrc;
-    	if(numero >= 0) {
-    	fotoSrc = "open"+numero+".gif";
-    	} else {
-    	fotoSrc = "bombdeath.gif";
-    	}
-    	ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
-        Image image = iconLogo.getImage();
-        Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        iconLogo = new ImageIcon(scaledImage);
-        tableroInterfaz[i][j].setIcon(iconLogo);
-    }
+				gbc.gridx = j;
+				gbc.gridy = i + 1;
+
+				contentPane.add(tableroInterfaz[i][j], gbc);
+			}
+		}
+
+		setVisible(true);
+		pack();
+	}
+
+	public void tableroInicial(int i, int j) {
+		tableroInterfaz[i][j] = new JButton();
+		tableroInterfaz[i][j].setFocusPainted(false);
+		tableroInterfaz[i][j].setBorder(BorderFactory.createEmptyBorder());
+		tableroInterfaz[i][j].setContentAreaFilled(false);
+		ImageIcon icono = tableroInicial("src/imagenes/blank.gif");
+		tableroInterfaz[i][j].setIcon(icono);
+	}
+
+	public ImageIcon tableroInicial(String ruta) {
+		ImageIcon icono = new ImageIcon(ruta);
+		Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		return new ImageIcon(imagen);
+	}
+
+	public void actualizarCelda(String fotoSrc, int i, int j) {
+		ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
+		Image image = iconLogo.getImage();
+		Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		iconLogo = new ImageIcon(scaledImage);
+		tableroInterfaz[i][j].setIcon(iconLogo);
+	}
+
+	public void destaparCelda(int x, int y, int numero) {
+		String fotoSrc;
+		if (numero >= 0 && numero <= 8) {
+			fotoSrc = "open" + numero + ".gif";
+		} else {
+			fotoSrc = "bombdeath.gif";
+			destaparMinas();
+		}
+		actualizarCelda(fotoSrc, x, y);
+	}
+	
+	public void destaparMinas() {
+		for (int i = 0; i < tablero.getTablero().length; i++) {
+			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
+				if (tablero.getTablero()[i][j].isMina()) {
+					actualizarCelda("bombrevealed.gif", i, j);
+				}
+			}
+		}
+	}
 }
