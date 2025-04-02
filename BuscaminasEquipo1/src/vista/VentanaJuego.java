@@ -6,6 +6,8 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -13,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import modelo.Dificultad;
 import modelo.Tablero;
@@ -52,12 +55,16 @@ public class VentanaJuego extends JFrame {
 
 				final int x = i;
 				final int y = j;
-				tableroInterfaz[i][j].addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
+				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						if(SwingUtilities.isLeftMouseButton(e)) {
 						int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 						destaparCelda(x, y, numero);
+						} else {
+							colocarBandera(x,y);
+						}
 					}
+					
 				});
 
 				gbc.gridx = j;
@@ -100,18 +107,26 @@ public class VentanaJuego extends JFrame {
 			fotoSrc = "open" + numero + ".gif";
 		} else {
 			fotoSrc = "bombdeath.gif";
-			destaparMinas();
+			destaparMinas(x,y);
 		}
 		actualizarCelda(fotoSrc, x, y);
 	}
-	
-	public void destaparMinas() {
+
+	public void destaparMinas(int x, int y) {
 		for (int i = 0; i < tablero.getTablero().length; i++) {
 			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
 				if (tablero.getTablero()[i][j].isMina()) {
 					actualizarCelda("bombrevealed.gif", i, j);
 				}
+				actualizarCelda("bombdeath.gif", x, y);
+				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
+				tableroInterfaz[i][j].setEnabled(false);
 			}
 		}
+		
+	}
+	
+	public void colocarBandera(int x, int y) {
+		actualizarCelda("bombflagged.gif",x,y);
 	}
 }
