@@ -24,7 +24,7 @@ public class VentanaJuego extends JFrame {
     private JLabel dificultad;
     private JLabel temporizador;
     private JButton[][] tableroInterfaz;
-
+    
     public VentanaJuego(Tablero tablero) {
         setTitle("Juego Buscaminas");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,7 +48,6 @@ public class VentanaJuego extends JFrame {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 tableroInterfaz[i][j] = new JButton();
-                tableroInterfaz[i][j] = new JButton();
                 tableroInterfaz[i][j].setFocusPainted(false);
                 tableroInterfaz[i][j].setBorder(BorderFactory.createEmptyBorder()); 
                 tableroInterfaz[i][j].setContentAreaFilled(false);
@@ -57,11 +56,11 @@ public class VentanaJuego extends JFrame {
                 
                 final int x = i;
                 final int y = j;
-                
+                int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
                 tableroInterfaz[i][j].addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        actualizarCeldas("src/open0.gif", x, y);
+                        actualizarCeldas(x, y, numero);
                     }
                 });
                 
@@ -73,23 +72,10 @@ public class VentanaJuego extends JFrame {
         }
 
         
-        numeroMinas = new JLabel("Minas: 0");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = columnas / 3;
-        contentPane.add(numeroMinas, gbc);
-
-
-        dificultad = new JLabel("Dificultad: ");
-        gbc.gridx = columnas / 3;
-        contentPane.add(dificultad, gbc);
-
-
-        temporizador = new JLabel("Tiempo: 0s");
-        gbc.gridx = 2 * (columnas / 3);
-        contentPane.add(temporizador, gbc);
-        pack();
+        
+        
         setVisible(true);
+        pack();
     }
 
     public ImageIcon tableroInicial(String ruta) {
@@ -98,10 +84,16 @@ public class VentanaJuego extends JFrame {
         return new ImageIcon(imagen);
     }
     
-    public void actualizarCeldas(String fotoSrc, int i, int j) {
-        ImageIcon iconLogo = new ImageIcon("src/" + fotoSrc);
+    public void actualizarCeldas(int i, int j, int numero) {
+    	String fotoSrc;
+    	if(numero >= 0) {
+    	fotoSrc = "open"+numero+".gif";
+    	} else {
+    	fotoSrc = "bombdeath.gif";
+    	}
+    	ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
         Image image = iconLogo.getImage();
-        Image scaledImage = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
         iconLogo = new ImageIcon(scaledImage);
         tableroInterfaz[i][j].setIcon(iconLogo);
     }
