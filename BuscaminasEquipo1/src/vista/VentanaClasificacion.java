@@ -50,69 +50,69 @@ public class VentanaClasificacion extends JFrame {
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JLabel clasificacion = new JLabel("Clasificacion:");
-		clasificacion.setFont(new Font("Tahoma", Font.BOLD, 22));
-		GridBagConstraints gbc_clasificacion = new GridBagConstraints();
-		gbc_clasificacion.insets = new Insets(0, 0, 5, 5);
-		gbc_clasificacion.gridx = 1;
-		gbc_clasificacion.gridy = 1;
-		contentPane.add(clasificacion, gbc_clasificacion);
+		JLabel jLabelClasificacion = new JLabel("Clasificacion:");
+		jLabelClasificacion.setFont(new Font("Tahoma", Font.BOLD, 22));
+		GridBagConstraints gbc_jLabelClasificacion = new GridBagConstraints();
+		gbc_jLabelClasificacion.insets = new Insets(0, 0, 5, 5);
+		gbc_jLabelClasificacion.gridx = 1;
+		gbc_jLabelClasificacion.gridy = 1;
+		contentPane.add(jLabelClasificacion, gbc_jLabelClasificacion);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(192, 192, 192));
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.insets = new Insets(0, 0, 5, 5);
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 1;
-		gbc_panel.gridy = 2;
-		contentPane.add(panel, gbc_panel);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0};
-		gbl_panel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
+		JPanel tabla = new JPanel();
+		tabla.setBackground(new Color(192, 192, 192));
+		GridBagConstraints gbc_tabla = new GridBagConstraints();
+		gbc_tabla.insets = new Insets(0, 0, 5, 5);
+		gbc_tabla.fill = GridBagConstraints.BOTH;
+		gbc_tabla.gridx = 1;
+		gbc_tabla.gridy = 2;
+		contentPane.add(tabla, gbc_tabla);
+		GridBagLayout gbl_tabla = new GridBagLayout();
+		gbl_tabla.columnWidths = new int[]{0, 0, 0, 0};
+		gbl_tabla.rowHeights = new int[]{0, 0};
+		gbl_tabla.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_tabla.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		tabla.setLayout(gbl_tabla);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(128, 128, 128));
-		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-		gbc_panel_1.insets = new Insets(0, 0, 0, 5);
-		gbc_panel_1.fill = GridBagConstraints.BOTH;
-		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 0;
-		panel.add(panel_1, gbc_panel_1);
+		JPanel columnaPuesto = new JPanel();
+		columnaPuesto.setBackground(new Color(128, 128, 128));
+		GridBagConstraints gbc_columnaPuesto = new GridBagConstraints();
+		gbc_columnaPuesto.insets = new Insets(0, 0, 0, 5);
+		gbc_columnaPuesto.fill = GridBagConstraints.BOTH;
+		gbc_columnaPuesto.gridx = 0;
+		gbc_columnaPuesto.gridy = 0;
+		tabla.add(columnaPuesto, gbc_columnaPuesto);
 		
-		JLabel lblNewLabel = new JLabel("Puesto");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 10));
-		lblNewLabel.setForeground(new Color(255, 255, 255));
-		panel_1.add(lblNewLabel);
+		JLabel jLabelPuesto = new JLabel("Puesto");
+		jLabelPuesto.setFont(new Font("Tahoma", Font.BOLD, 10));
+		jLabelPuesto.setForeground(new Color(255, 255, 255));
+		columnaPuesto.add(jLabelPuesto);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(new Color(128, 128, 128));
-		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
-		gbc_panel_2.insets = new Insets(0, 0, 0, 5);
-		gbc_panel_2.fill = GridBagConstraints.BOTH;
-		gbc_panel_2.gridx = 1;
-		gbc_panel_2.gridy = 0;
-		panel.add(panel_2, gbc_panel_2);
+		JPanel columnaUsuario = new JPanel();
+		columnaUsuario.setBackground(new Color(128, 128, 128));
+		GridBagConstraints gbc_columnaUsuario = new GridBagConstraints();
+		gbc_columnaUsuario.insets = new Insets(0, 0, 0, 5);
+		gbc_columnaUsuario.fill = GridBagConstraints.BOTH;
+		gbc_columnaUsuario.gridx = 1;
+		gbc_columnaUsuario.gridy = 0;
+		tabla.add(columnaUsuario, gbc_columnaUsuario);
 		
-		JLabel lblNewLabel_1 = new JLabel("Usuario");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 10));
-		lblNewLabel_1.setForeground(new Color(255, 255, 255));
-		panel_2.add(lblNewLabel_1);
+		JLabel jLabelUsuario = new JLabel("Usuario");
+		jLabelUsuario.setFont(new Font("Tahoma", Font.BOLD, 10));
+		jLabelUsuario.setForeground(new Color(255, 255, 255));
+		columnaUsuario.add(jLabelUsuario);
 		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(new Color(128, 128, 128));
-		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
-		gbc_panel_3.fill = GridBagConstraints.BOTH;
-		gbc_panel_3.gridx = 2;
-		gbc_panel_3.gridy = 0;
-		panel.add(panel_3, gbc_panel_3);
+		JPanel columnaPuntuacion = new JPanel();
+		columnaPuntuacion.setBackground(new Color(128, 128, 128));
+		GridBagConstraints gbc_columnaPuntuacion = new GridBagConstraints();
+		gbc_columnaPuntuacion.fill = GridBagConstraints.BOTH;
+		gbc_columnaPuntuacion.gridx = 2;
+		gbc_columnaPuntuacion.gridy = 0;
+		tabla.add(columnaPuntuacion, gbc_columnaPuntuacion);
 		
-		JLabel lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setForeground(new Color(255, 255, 255));
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 10));
-		panel_3.add(lblNewLabel_2);
+		JLabel jLabelPuntuacion = new JLabel("Puntuacion");
+		jLabelPuntuacion.setForeground(new Color(255, 255, 255));
+		jLabelPuntuacion.setFont(new Font("Tahoma", Font.BOLD, 10));
+		columnaPuntuacion.add(jLabelPuntuacion);
 	}
 
 }

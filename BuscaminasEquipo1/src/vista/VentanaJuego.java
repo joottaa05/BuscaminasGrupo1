@@ -1,102 +1,100 @@
 package vista;
 
-import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import modelo.Tablero;
-
-import java.awt.GridBagLayout;
-import java.awt.Image;
 import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.event.ActionListener;
-import modelo.Casilla;
+import javax.swing.JPanel;
+
 import modelo.Dificultad;
 import modelo.Tablero;
+
 public class VentanaJuego extends JFrame {
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JLabel numeroMinas;
+    private JLabel dificultad;
+    private JLabel temporizador;
+    private JButton[][] tableroInterfaz;
+    
+    public VentanaJuego(Tablero tablero) {
+        setTitle("Juego Buscaminas");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 600);
+        setLocationRelativeTo(null);
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JLabel numeroMinas;
-	private JLabel dificultad;
-	private JLabel temporizador;
-	protected static Tablero tablero = new Tablero(Dificultad.Dificil);
+        contentPane = new JPanel(new GridBagLayout());
+        setContentPane(contentPane);
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaJuego frame = new VentanaJuego(tablero);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0,0,0,0);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
 
-	/**
-	 * Create the frame.
-	 */
-	public VentanaJuego(Tablero tablero) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		contentPane.setLayout(gbl_contentPane);
-		
-		
-		
-		
-		numeroMinas = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 0;
-		contentPane.add(numeroMinas, gbc_lblNewLabel);
-		
-		dificultad = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_1.gridx = 1;
-		gbc_lblNewLabel_1.gridy = 0;
-		contentPane.add(dificultad, gbc_lblNewLabel_1);
-		
-		temporizador = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel_2.gridx = 2;
-		gbc_lblNewLabel_2.gridy = 0;
-		contentPane.add(temporizador, gbc_lblNewLabel_2);
-	}
-	
-	
-	
-	public void actualizarMinas(String fotoSrc) {
-		ImageIcon iconLogo = new ImageIcon("src/"+fotoSrc);
-		Image image = iconLogo.getImage();
-		Image scaledImage = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-		iconLogo = new ImageIcon(scaledImage);
-		numeroMinas.setIcon(iconLogo);
-	}
+        int filas = tablero.getTablero().length;
+        int columnas = tablero.getTablero()[0].length;
+        tableroInterfaz = new JButton[filas][columnas];
 
 
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                tableroInterfaz[i][j] = new JButton();
+                tableroInterfaz[i][j].setFocusPainted(false);
+                tableroInterfaz[i][j].setBorder(BorderFactory.createEmptyBorder()); 
+                tableroInterfaz[i][j].setContentAreaFilled(false);
+                ImageIcon icono = tableroInicial("src/imagenes/blank.gif");
+                tableroInterfaz[i][j].setIcon(icono);
+                
+                final int x = i;
+                final int y = j;
+                int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
+                tableroInterfaz[i][j].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        actualizarCeldas(x, y, numero);
+                    }
+                });
+                
+                gbc.gridx = j;
+                gbc.gridy = i + 1;
+                
+                contentPane.add(tableroInterfaz[i][j], gbc);
+            }
+        }
+
+        
+        
+        
+        setVisible(true);
+        pack();
+    }
+
+    public ImageIcon tableroInicial(String ruta) {
+    	ImageIcon icono = new ImageIcon(ruta);
+        Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        return new ImageIcon(imagen);
+    }
+    
+    public void actualizarCeldas(int i, int j, int numero) {
+    	String fotoSrc;
+    	if(numero >= 0) {
+    	fotoSrc = "open"+numero+".gif";
+    	} else {
+    	fotoSrc = "bombdeath.gif";
+    	}
+    	ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
+        Image image = iconLogo.getImage();
+        Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        iconLogo = new ImageIcon(scaledImage);
+        tableroInterfaz[i][j].setIcon(iconLogo);
+    }
 }
