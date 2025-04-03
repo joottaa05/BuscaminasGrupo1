@@ -3,6 +3,7 @@ package controlador;
 import modelo.Casilla;
 import modelo.Dificultad;
 import modelo.Tablero;
+import vista.VentanaInicioSesion;
 import vista.VentanaJuego;
 
 public class Main {
