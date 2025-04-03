@@ -24,7 +24,7 @@ public class VentanaJuego extends JFrame {
 	private JLabel numeroMinas;
 	private JLabel temporizador;
 	private JButton[][] tableroInterfaz;
-	private Tablero tablero = new Tablero(Dificultad.Dificil);
+	private Tablero tablero = new Tablero(Dificultad.Fácil);
 	private boolean esBandera = false;
 	private boolean esInterrogante = false;
 
@@ -62,16 +62,17 @@ public class VentanaJuego extends JFrame {
 						if (SwingUtilities.isLeftMouseButton(e)) {
 							int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 							destaparCelda(x, y, numero);
-							esBandera = false;
 						} else if (SwingUtilities.isRightMouseButton(e) && !esBandera && esInterrogante == false) {
 							colocarBandera(x, y);
 							esBandera = true;
-						} else if (SwingUtilities.isRightMouseButton(e) && esBandera) {
+							esInterrogante = false;
+						} else if (SwingUtilities.isRightMouseButton(e) && esBandera && esInterrogante == false) {
 							actualizarCelda("flagremoved.gif", x, y);
 							esBandera = false;
 							esInterrogante = true;
 						} else {
 							actualizarCelda("blank.gif", x, y);
+							esBandera = false;
 							esInterrogante = false;
 						}
 					}
@@ -111,20 +112,45 @@ public class VentanaJuego extends JFrame {
 			Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
 			iconLogo = new ImageIcon(scaledImage);
 			tableroInterfaz[i][j].setIcon(iconLogo);
-	    }
-		
+		}
+
 	}
 
 	public void destaparCelda(int x, int y, int numero) {
-		String fotoSrc;
-		if (numero >= 0 && numero <= 8) {
-			fotoSrc = "open" + numero + ".gif";
-			actualizarCelda(fotoSrc, x, y);
-		} else {
-			fotoSrc = "bombdeath.gif";
-			destaparMinas(x, y);
+		if (tableroInterfaz[x][y].isEnabled()) {
+			String fotoSrc;
+			if (numero > 0 && numero <= 8) {
+				fotoSrc = "open" + numero + ".gif";
+				actualizarCelda(fotoSrc, x, y);
+				tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
+				tableroInterfaz[x][y].setEnabled(false);
+			} else if (numero == -1) {
+				fotoSrc = "bombdeath.gif";
+				destaparMinas(x, y);
+				
+			} else {
+				actualizarCelda("open0.gif", x, y);
+				tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
+				tableroInterfaz[x][y].setEnabled(false);
+				
+				int[] calcularPosicionX = { -1, -1, -1, 0, 0, 1, 1, 1 };
+				int[] calcularPosicionY = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+				for (int i = 0; i < 8; i++) {
+					int nuevoX = x + calcularPosicionX[i];
+					int nuevoY = y + calcularPosicionY[i];
+
+					if (nuevoX >= 0 && nuevoX < tablero.getTablero().length && nuevoY >= 0
+							&& nuevoY < tablero.getTablero()[0].length && tableroInterfaz[nuevoX][nuevoY].isEnabled()) {
+						int nuevo = tablero.conseguirNumeroCasilla(tablero.getTablero(), nuevoX, nuevoY);
+						
+						if(nuevo >= 0) {
+							destaparCelda(nuevoX, nuevoY, nuevo);
+						}
+					}
+				}
+			}
 		}
-		
 	}
 
 	public void destaparMinas(int x, int y) {
@@ -136,11 +162,6 @@ public class VentanaJuego extends JFrame {
 				}
 				actualizarCelda("bombdeath.gif", x, y);
 				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
-
-			}
-		}
-		for(int i = 0; i<tablero.getTablero().length;i++) {
-			for(int j = 0; j<tablero.getTablero()[0].length;j++) {
 				tableroInterfaz[i][j].setEnabled(false);
 			}
 		}
