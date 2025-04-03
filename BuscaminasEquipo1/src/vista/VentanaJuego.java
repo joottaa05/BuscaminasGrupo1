@@ -105,22 +105,26 @@ public class VentanaJuego extends JFrame {
 	}
 
 	public void actualizarCelda(String fotoSrc, int i, int j) {
-		ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
-		Image image = iconLogo.getImage();
-		Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-		iconLogo = new ImageIcon(scaledImage);
-		tableroInterfaz[i][j].setIcon(iconLogo);
+		if (tableroInterfaz[i][j].isEnabled()) {
+			ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
+			Image image = iconLogo.getImage();
+			Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+			iconLogo = new ImageIcon(scaledImage);
+			tableroInterfaz[i][j].setIcon(iconLogo);
+	    }
+		
 	}
 
 	public void destaparCelda(int x, int y, int numero) {
 		String fotoSrc;
 		if (numero >= 0 && numero <= 8) {
 			fotoSrc = "open" + numero + ".gif";
+			actualizarCelda(fotoSrc, x, y);
 		} else {
 			fotoSrc = "bombdeath.gif";
 			destaparMinas(x, y);
 		}
-		actualizarCelda(fotoSrc, x, y);
+		
 	}
 
 	public void destaparMinas(int x, int y) {
@@ -128,13 +132,18 @@ public class VentanaJuego extends JFrame {
 			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
 				if (tablero.getTablero()[i][j].isMina()) {
 					actualizarCelda("bombrevealed.gif", i, j);
+					tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
 				}
 				actualizarCelda("bombdeath.gif", x, y);
 				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
+
+			}
+		}
+		for(int i = 0; i<tablero.getTablero().length;i++) {
+			for(int j = 0; j<tablero.getTablero()[0].length;j++) {
 				tableroInterfaz[i][j].setEnabled(false);
 			}
 		}
-
 	}
 
 	public void colocarBandera(int x, int y) {
