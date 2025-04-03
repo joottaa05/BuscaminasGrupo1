@@ -1,5 +1,6 @@
 package vista;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -8,12 +9,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.MatteBorder;
 
 import modelo.Dificultad;
 import modelo.Tablero;
@@ -24,9 +27,7 @@ public class VentanaJuego extends JFrame {
 	private JLabel numeroMinas;
 	private JLabel temporizador;
 	private JButton[][] tableroInterfaz;
-	private Tablero tablero = new Tablero(Dificultad.Fácil);
-	private boolean esBandera = false;
-	private boolean esInterrogante = false;
+	private Tablero tablero = new Tablero(Dificultad.Intermedio);
 
 	public VentanaJuego() {
 		setTitle("Juego Buscaminas");
@@ -62,19 +63,10 @@ public class VentanaJuego extends JFrame {
 						if (SwingUtilities.isLeftMouseButton(e)) {
 							int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 							destaparCelda(x, y, numero);
-						} else if (SwingUtilities.isRightMouseButton(e) && !esBandera && esInterrogante == false) {
-							colocarBandera(x, y);
-							esBandera = true;
-							esInterrogante = false;
-						} else if (SwingUtilities.isRightMouseButton(e) && esBandera && esInterrogante == false) {
-							actualizarCelda("flagremoved.gif", x, y);
-							esBandera = false;
-							esInterrogante = true;
-						} else {
-							actualizarCelda("blank.gif", x, y);
-							esBandera = false;
-							esInterrogante = false;
-						}
+						} else if (SwingUtilities.isRightMouseButton(e)) {
+							comprobarBandera(x,y);
+							
+						} 
 					}
 
 				});
@@ -93,17 +85,16 @@ public class VentanaJuego extends JFrame {
 	public void tableroInicial(int i, int j) {
 		tableroInterfaz[i][j] = new JButton();
 		tableroInterfaz[i][j].setFocusPainted(false);
-		tableroInterfaz[i][j].setBorder(BorderFactory.createEmptyBorder());
+		tableroInterfaz[i][j].setBorder(new MatteBorder(0, 1, 1, 1, new Color(0,0,0)));
 		tableroInterfaz[i][j].setContentAreaFilled(false);
-		ImageIcon icono = tableroInicial("src/imagenes/blank.gif");
+		ImageIcon icono = new ImageIcon("src/imagenes/celda.gif");
+		Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		icono = new ImageIcon(imagen);
 		tableroInterfaz[i][j].setIcon(icono);
+		icono.setDescription("src/imagenes/celda.gif");
 	}
 
-	public ImageIcon tableroInicial(String ruta) {
-		ImageIcon icono = new ImageIcon(ruta);
-		Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-		return new ImageIcon(imagen);
-	}
+
 
 	public void actualizarCelda(String fotoSrc, int i, int j) {
 		if (tableroInterfaz[i][j].isEnabled()) {
@@ -112,6 +103,7 @@ public class VentanaJuego extends JFrame {
 			Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
 			iconLogo = new ImageIcon(scaledImage);
 			tableroInterfaz[i][j].setIcon(iconLogo);
+			iconLogo.setDescription(fotoSrc);
 		}
 
 	}
@@ -125,11 +117,11 @@ public class VentanaJuego extends JFrame {
 				tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
 				tableroInterfaz[x][y].setEnabled(false);
 			} else if (numero == -1) {
-				fotoSrc = "bombdeath.gif";
+				fotoSrc = "explotada.gif";
 				destaparMinas(x, y);
 				
 			} else {
-				actualizarCelda("open0.gif", x, y);
+				actualizarCelda("sinMina.gif", x, y);
 				tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
 				tableroInterfaz[x][y].setEnabled(false);
 				
@@ -157,17 +149,27 @@ public class VentanaJuego extends JFrame {
 		for (int i = 0; i < tablero.getTablero().length; i++) {
 			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
 				if (tablero.getTablero()[i][j].isMina()) {
-					actualizarCelda("bombrevealed.gif", i, j);
+					actualizarCelda("mina.gif", i, j);
 					tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
 				}
-				actualizarCelda("bombdeath.gif", x, y);
+				actualizarCelda("explotada.gif", x, y);
 				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
 				tableroInterfaz[i][j].setEnabled(false);
 			}
 		}
 	}
-
-	public void colocarBandera(int x, int y) {
-		actualizarCelda("bombflagged.gif", x, y);
+	
+	public void comprobarBandera(int x, int y) {
+		Icon icono = tableroInterfaz[x][y].getIcon();
+		ImageIcon iconoImg = (ImageIcon) icono;
+		String ruta = iconoImg.getDescription();
+		
+		if(ruta.equals("celda.gif")) {
+			actualizarCelda("bandera.gif", x, y);
+		} else if (ruta.equals("bandera.gif")) {
+			actualizarCelda("interrogante.gif", x, y);
+		} else {
+			actualizarCelda("celda.gif", x, y);
+		}
 	}
 }
