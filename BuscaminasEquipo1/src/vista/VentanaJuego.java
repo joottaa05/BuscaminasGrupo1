@@ -27,6 +27,7 @@ public class VentanaJuego extends JFrame {
 	private Tablero tablero = new Tablero(Dificultad.Dificil);
 	private boolean esBandera = false;
 	private boolean esInterrogante = false;
+
 	public VentanaJuego() {
 		setTitle("Juego Buscaminas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,35 +48,34 @@ public class VentanaJuego extends JFrame {
 		int filas = tablero.getTablero().length;
 		int columnas = tablero.getTablero()[0].length;
 		tableroInterfaz = new JButton[filas][columnas];
-		
+
 		for (int i = 0; i < filas; i++) {
 			for (int j = 0; j < columnas; j++) {
 				tableroInicial(i, j);
 
 				final int x = i;
 				final int y = j;
-				
+
 				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-						
 
-						if(SwingUtilities.isLeftMouseButton(e)) {
-						int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
-						destaparCelda(x, y, numero);
-						esBandera=false;
-						} else if(SwingUtilities.isRightMouseButton(e) && !esBandera && esInterrogante == false){
-							colocarBandera(x,y);
+						if (SwingUtilities.isLeftMouseButton(e)) {
+							int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
+							destaparCelda(x, y, numero);
+							esBandera = false;
+						} else if (SwingUtilities.isRightMouseButton(e) && !esBandera && esInterrogante == false) {
+							colocarBandera(x, y);
 							esBandera = true;
-						} else if(SwingUtilities.isRightMouseButton(e) && esBandera){
-							actualizarCelda("flagremoved.gif",x,y);
+						} else if (SwingUtilities.isRightMouseButton(e) && esBandera) {
+							actualizarCelda("flagremoved.gif", x, y);
 							esBandera = false;
 							esInterrogante = true;
 						} else {
-							actualizarCelda("blank.gif",x,y);
+							actualizarCelda("blank.gif", x, y);
 							esInterrogante = false;
 						}
 					}
-					
+
 				});
 
 				gbc.gridx = j;
@@ -118,7 +118,7 @@ public class VentanaJuego extends JFrame {
 			fotoSrc = "open" + numero + ".gif";
 		} else {
 			fotoSrc = "bombdeath.gif";
-			destaparMinas(x,y);
+			destaparMinas(x, y);
 		}
 		actualizarCelda(fotoSrc, x, y);
 	}
@@ -134,10 +134,10 @@ public class VentanaJuego extends JFrame {
 				tableroInterfaz[i][j].setEnabled(false);
 			}
 		}
-		
+
 	}
-	
+
 	public void colocarBandera(int x, int y) {
-		actualizarCelda("bombflagged.gif",x,y);
+		actualizarCelda("bombflagged.gif", x, y);
 	}
 }
