@@ -11,10 +11,9 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Tablero tablero = new Tablero(Dificultad.Fácil);
-		tablero.generarTablero();
-		tablero.colocarMinas(tablero.getTablero());
-		VentanaJuego vj = new VentanaJuego(tablero);
-		vj.setVisible(true);
+
+		
+		VentanaJuego vj = new VentanaJuego();
+	vj.setVisible(true);
 	}
 }
