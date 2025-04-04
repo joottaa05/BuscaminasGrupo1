@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controlador.Main;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
@@ -113,6 +116,7 @@ public class VentanaInicioSesion extends JFrame {
 		btnJugar.setForeground(new Color(49, 63, 79));
 		btnJugar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Main.abrirJuego();
 			}
 		});
 		btnJugar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
