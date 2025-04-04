@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
 import modelo.Dificultad;
@@ -64,8 +65,8 @@ public class VentanaJuego extends JFrame {
 							int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 							destaparCelda(x, y, numero);
 						} else if (SwingUtilities.isRightMouseButton(e)) {
-							comprobarBandera(x,y);
-						} 
+							comprobarBandera(x, y);
+						}
 					}
 				});
 
@@ -82,37 +83,31 @@ public class VentanaJuego extends JFrame {
 
 	public void tableroInicial(int i, int j) {
 		tableroInterfaz[i][j] = new JButton();
-		tableroInterfaz[i][j].setFocusPainted(false);
-		if(i == 0) {
-		tableroInterfaz[i][j].setBorder(new MatteBorder(1, 0, 1, 1, new Color(0,0,0)));
+		if (i == 0) {
+			tableroInterfaz[i][j].setBorder(new MatteBorder(1, 0, 1, 1, new Color(0, 0, 0)));
 		} else {
-			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 0, 1, 1, new Color(0,0,0)));
+			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 0, 1, 1, new Color(0, 0, 0)));
 		}
-		if(j == 0) {
-			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 1, 1, 1, new Color(0,0,0)));
+		if (j == 0) {
+			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 1, 1, 1, new Color(0, 0, 0)));
 		} else {
-			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 0, 1, 1, new Color(0,0,0)));
+			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 0, 1, 1, new Color(0, 0, 0)));
 		}
-		tableroInterfaz[i][j].setContentAreaFilled(false);
 		ImageIcon icono = new ImageIcon("src/imagenes/celda0.gif");
 		Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
 		icono = new ImageIcon(imagen);
+		icono.setDescription("celda0.gif");
 		tableroInterfaz[i][j].setIcon(icono);
-		icono.setDescription("src/imagenes/celda0.gif");
+
 	}
 
-
-
 	public void actualizarCelda(String fotoSrc, int i, int j) {
-		if (tableroInterfaz[i][j].isEnabled()) {
-			ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
-			Image image = iconLogo.getImage();
-			Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-			iconLogo = new ImageIcon(scaledImage);
-			tableroInterfaz[i][j].setIcon(iconLogo);
-			iconLogo.setDescription(fotoSrc);
-		}
-
+		ImageIcon iconLogo = new ImageIcon("src/imagenes/" + fotoSrc);
+		Image image = iconLogo.getImage();
+		Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		iconLogo = new ImageIcon(scaledImage);
+		tableroInterfaz[i][j].setIcon(iconLogo);
+		iconLogo.setDescription(fotoSrc);
 	}
 
 	public void destaparCelda(int x, int y, int numero) {
@@ -121,17 +116,20 @@ public class VentanaJuego extends JFrame {
 			if (numero > 0 && numero <= 8) {
 				fotoSrc = numero + "Mina.gif";
 				actualizarCelda(fotoSrc, x, y);
-				tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
-				tableroInterfaz[x][y].setEnabled(false);
+
 			} else if (numero == -1) {
 				fotoSrc = "explotada.gif";
 				destaparMinas(x, y);
-				
+				return;
 			} else {
 				actualizarCelda("sinMina.gif", x, y);
-				tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
-				tableroInterfaz[x][y].setEnabled(false);
-				
+			}
+			
+			tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
+		    tableroInterfaz[x][y].setEnabled(false);
+			
+
+			if (numero == 0) {
 				int[] calcularPosicionX = { -1, -1, -1, 0, 0, 1, 1, 1 };
 				int[] calcularPosicionY = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
@@ -142,14 +140,16 @@ public class VentanaJuego extends JFrame {
 					if (nuevoX >= 0 && nuevoX < tablero.getTablero().length && nuevoY >= 0
 							&& nuevoY < tablero.getTablero()[0].length && tableroInterfaz[nuevoX][nuevoY].isEnabled()) {
 						int nuevo = tablero.conseguirNumeroCasilla(tablero.getTablero(), nuevoX, nuevoY);
-						
-						if(nuevo >= 0) {
+
+						if (nuevo >= 0) {
 							destaparCelda(nuevoX, nuevoY, nuevo);
 						}
 					}
 				}
 			}
 		}
+	
+
 	}
 
 	public void destaparMinas(int x, int y) {
@@ -165,13 +165,13 @@ public class VentanaJuego extends JFrame {
 			}
 		}
 	}
-	
+
 	public void comprobarBandera(int x, int y) {
 		Icon icono = tableroInterfaz[x][y].getIcon();
 		ImageIcon iconoImg = (ImageIcon) icono;
 		String ruta = iconoImg.getDescription();
-		
-		if(ruta.equals("celda0.gif")) {
+
+		if (ruta.equals("celda0.gif")) {
 			actualizarCelda("bandera.gif", x, y);
 		} else if (ruta.equals("bandera.gif")) {
 			actualizarCelda("interrogante.gif", x, y);
