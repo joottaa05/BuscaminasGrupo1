@@ -15,15 +15,21 @@ public class Main {
 		// TODO Auto-generated method stub
 		
 		vis = new VentanaInicioSesion();
-		vj.setVisible(true);
+		vis.setVisible(true);
 		
 	}
 	
-	public static void abrirJuego() {
+	public static void abrirJuego(String usuario, Dificultad dificultad) { // Hay que hacer que la dificultad se mande a la 'VentanaInicioSesion', ya que esta puesto para que siempre sea INTERMEDIO.
 		
-		vj = new VentanaJuego();
-		vis.setVisible(false);
-		vj.setVisible(true);
+		if(usuario == null || usuario.equals("")) {
+			System.out.println("No se ha introducido ningun nombre de usuario.");
+			System.out.println("Por favor, introduzca un nombre de usuario.");
+			
+		}else {
+			vj = new VentanaJuego(dificultad);
+			vis.setVisible(false);
+			vj.setVisible(true);
+		}
 		
 	}
 	

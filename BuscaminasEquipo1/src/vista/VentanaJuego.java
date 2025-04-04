@@ -27,9 +27,10 @@ public class VentanaJuego extends JFrame {
 	private JLabel numeroMinas;
 	private JLabel temporizador;
 	private JButton[][] tableroInterfaz;
-	private Tablero tablero = new Tablero(Dificultad.Intermedio);
+	private Tablero tablero;
 
-	public VentanaJuego() {
+	public VentanaJuego(Dificultad dificultad) {
+		tablero = new Tablero(dificultad);
 		setTitle("Juego Buscaminas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(600, 600);

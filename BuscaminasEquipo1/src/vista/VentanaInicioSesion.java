@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controlador.Main;
+import modelo.Dificultad;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -28,20 +29,6 @@ public class VentanaInicioSesion extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textFieldUsuario;
-
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaInicioSesion frame = new VentanaInicioSesion();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 
 	public VentanaInicioSesion() {
@@ -101,7 +88,7 @@ public class VentanaInicioSesion extends JFrame {
 		gbc_tituloDificultad.gridy = 2;
 		contentPane.add(tituloDificultad, gbc_tituloDificultad);
 		
-		JComboBox dificultad = new JComboBox<>(new String[] { "Fácil", "Medio", "Difícil" });
+		JComboBox dificultad = new JComboBox<>(new String[] { "Fácil", "Medio", "Dificil" });
 		dificultad.setBackground(Color.WHITE);
 		dificultad.setForeground(new Color(49, 63, 79));
 		dificultad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -116,7 +103,7 @@ public class VentanaInicioSesion extends JFrame {
 		btnJugar.setForeground(new Color(49, 63, 79));
 		btnJugar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Main.abrirJuego();
+				Main.abrirJuego(textFieldUsuario.getText(), Dificultad.valueOf(dificultad.getSelectedItem().toString()));
 			}
 		});
 		btnJugar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
