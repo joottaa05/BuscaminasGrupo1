@@ -60,16 +60,13 @@ public class VentanaJuego extends JFrame {
 
 				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-
 						if (SwingUtilities.isLeftMouseButton(e)) {
 							int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 							destaparCelda(x, y, numero);
 						} else if (SwingUtilities.isRightMouseButton(e)) {
 							comprobarBandera(x,y);
-							
 						} 
 					}
-
 				});
 
 				gbc.gridx = j;
@@ -86,13 +83,22 @@ public class VentanaJuego extends JFrame {
 	public void tableroInicial(int i, int j) {
 		tableroInterfaz[i][j] = new JButton();
 		tableroInterfaz[i][j].setFocusPainted(false);
-		tableroInterfaz[i][j].setBorder(new MatteBorder(0, 1, 1, 1, new Color(0,0,0)));
+		if(i == 0) {
+		tableroInterfaz[i][j].setBorder(new MatteBorder(1, 0, 1, 1, new Color(0,0,0)));
+		} else {
+			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 0, 1, 1, new Color(0,0,0)));
+		}
+		if(j == 0) {
+			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 1, 1, 1, new Color(0,0,0)));
+		} else {
+			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 0, 1, 1, new Color(0,0,0)));
+		}
 		tableroInterfaz[i][j].setContentAreaFilled(false);
-		ImageIcon icono = new ImageIcon("src/imagenes/celda.gif");
+		ImageIcon icono = new ImageIcon("src/imagenes/celda0.gif");
 		Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
 		icono = new ImageIcon(imagen);
 		tableroInterfaz[i][j].setIcon(icono);
-		icono.setDescription("src/imagenes/celda.gif");
+		icono.setDescription("src/imagenes/celda0.gif");
 	}
 
 
@@ -113,7 +119,7 @@ public class VentanaJuego extends JFrame {
 		if (tableroInterfaz[x][y].isEnabled()) {
 			String fotoSrc;
 			if (numero > 0 && numero <= 8) {
-				fotoSrc = "open" + numero + ".gif";
+				fotoSrc = numero + "Mina.gif";
 				actualizarCelda(fotoSrc, x, y);
 				tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
 				tableroInterfaz[x][y].setEnabled(false);
@@ -165,12 +171,12 @@ public class VentanaJuego extends JFrame {
 		ImageIcon iconoImg = (ImageIcon) icono;
 		String ruta = iconoImg.getDescription();
 		
-		if(ruta.equals("celda.gif")) {
+		if(ruta.equals("celda0.gif")) {
 			actualizarCelda("bandera.gif", x, y);
 		} else if (ruta.equals("bandera.gif")) {
 			actualizarCelda("interrogante.gif", x, y);
 		} else {
-			actualizarCelda("celda.gif", x, y);
+			actualizarCelda("celda0.gif", x, y);
 		}
 	}
 }
