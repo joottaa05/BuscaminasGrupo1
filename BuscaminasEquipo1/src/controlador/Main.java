@@ -7,11 +7,24 @@ import vista.VentanaInicioSesion;
 import vista.VentanaJuego;
 
 public class Main {
-
+	
+	private static VentanaInicioSesion vis;
+	private static VentanaJuego vj;
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
-		VentanaJuego vj = new VentanaJuego();
+		
+		vis = new VentanaInicioSesion();
 		vj.setVisible(true);
+		
 	}
+	
+	public static void abrirJuego() {
+		
+		vj = new VentanaJuego();
+		vis.setVisible(false);
+		vj.setVisible(true);
+		
+	}
+	
 }
