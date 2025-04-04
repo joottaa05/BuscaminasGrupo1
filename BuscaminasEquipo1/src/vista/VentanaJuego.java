@@ -137,10 +137,8 @@ public class VentanaJuego extends JFrame {
 					int nuevoX = x + calcularPosicionX[i];
 					int nuevoY = y + calcularPosicionY[i];
 
-					if (nuevoX >= 0 && nuevoX < tablero.getTablero().length && nuevoY >= 0
-							&& nuevoY < tablero.getTablero()[0].length && tableroInterfaz[nuevoX][nuevoY].isEnabled()) {
+					if (condicionDestaparAgua(nuevoX, nuevoY)) {
 						int nuevo = tablero.conseguirNumeroCasilla(tablero.getTablero(), nuevoX, nuevoY);
-
 						if (nuevo >= 0) {
 							destaparCelda(nuevoX, nuevoY, nuevo);
 						}
@@ -148,20 +146,26 @@ public class VentanaJuego extends JFrame {
 				}
 			}
 		}
+	}
 	
-
+	public boolean condicionDestaparAgua (int nuevoX, int nuevoY) {
+		return nuevoX >= 0 && nuevoX < tablero.getTablero().length && nuevoY >= 0
+				&& nuevoY < tablero.getTablero()[0].length && tableroInterfaz[nuevoX][nuevoY].isEnabled();
 	}
 
 	public void destaparMinas(int x, int y) {
+		actualizarCelda("explotada.gif", x, y);
+		tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
+		tableroInterfaz[x][y].setEnabled(false);
+		
 		for (int i = 0; i < tablero.getTablero().length; i++) {
 			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
-				if (tablero.getTablero()[i][j].isMina()) {
+				if (tablero.getTablero()[i][j].isMina() && (i != x && j != y)) {
 					actualizarCelda("mina.gif", i, j);
-					tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
+					
 				}
-				actualizarCelda("explotada.gif", x, y);
 				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
-				tableroInterfaz[i][j].setEnabled(false);
+				tableroInterfaz[i][j].setEnabled(false); 
 			}
 		}
 	}
