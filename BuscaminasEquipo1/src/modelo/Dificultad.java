@@ -24,4 +24,5 @@ public enum Dificultad {
 	public int getminas() {
 		return minas;
 	}
+	
 }

@@ -21,6 +21,7 @@ import javax.swing.border.MatteBorder;
 
 import modelo.Dificultad;
 import modelo.Tablero;
+import java.awt.GridLayout;
 
 public class VentanaJuego extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -30,22 +31,81 @@ public class VentanaJuego extends JFrame {
 	private JButton[][] tableroInterfaz;
 	private Tablero tablero;
 
+	// ----------------------------------------------------------------------------------------------------
+	
+	// Falta añadir el numero de banderas (que vaya cambiando segun añadas o quites banderas), la cara y el temporizador
+	// Cuando le das a una mina, no te deja hacer nada mas
+	// Cuando te pasas el juego, no te lleva a VentanaClasificacion
+	
 	public VentanaJuego(Dificultad dificultad) {
 		tablero = new Tablero(dificultad);
 		setTitle("Juego Buscaminas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(600, 600);
+		setSize(442, 82);
 		setLocationRelativeTo(null);
 
-		contentPane = new JPanel(new GridBagLayout());
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.rowWeights = new double[]{1.0, 1.0};
+		gbl_contentPane.columnWeights = new double[]{1.0};
+		contentPane = new JPanel(gbl_contentPane);
 		setContentPane(contentPane);
+		
+		JPanel panelDatos = new JPanel();
+		GridBagConstraints gbc_panelDatos = new GridBagConstraints();
+		gbc_panelDatos.insets = new Insets(0, 0, 5, 0);
+		gbc_panelDatos.fill = GridBagConstraints.BOTH;
+		gbc_panelDatos.gridx = 0;
+		gbc_panelDatos.gridy = 0;
+		contentPane.add(panelDatos, gbc_panelDatos);
+		GridBagLayout gbl_panelDatos = new GridBagLayout();
+		gbl_panelDatos.columnWidths = new int[]{119, 0};
+		gbl_panelDatos.rowHeights = new int[]{10, 0, 0, 0};
+		gbl_panelDatos.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panelDatos.rowWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+		panelDatos.setLayout(gbl_panelDatos);
+		
+		JPanel panelMinas = new JPanel();
+		GridBagConstraints gbc_panelMinas = new GridBagConstraints();
+		gbc_panelMinas.insets = new Insets(0, 0, 5, 0);
+		gbc_panelMinas.fill = GridBagConstraints.BOTH;
+		gbc_panelMinas.gridx = 0;
+		gbc_panelMinas.gridy = 0;
+		panelDatos.add(panelMinas, gbc_panelMinas);
+		
+		JPanel panelCara = new JPanel();
+		GridBagConstraints gbc_panelCara = new GridBagConstraints();
+		gbc_panelCara.insets = new Insets(0, 0, 5, 0);
+		gbc_panelCara.fill = GridBagConstraints.BOTH;
+		gbc_panelCara.gridx = 0;
+		gbc_panelCara.gridy = 1;
+		panelDatos.add(panelCara, gbc_panelCara);
+		
+		JPanel panelTiempo = new JPanel();
+		GridBagConstraints gbc_panelTiempo = new GridBagConstraints();
+		gbc_panelTiempo.fill = GridBagConstraints.BOTH;
+		gbc_panelTiempo.gridx = 0;
+		gbc_panelTiempo.gridy = 2;
+		panelDatos.add(panelTiempo, gbc_panelTiempo);
+				
+		JPanel panelTablero = new JPanel();
+		GridBagConstraints gbc_panelTablero = new GridBagConstraints();
+		gbc_panelTablero.fill = GridBagConstraints.BOTH;
+		gbc_panelTablero.gridx = 0;
+		gbc_panelTablero.gridy = 1;
+		contentPane.add(panelTablero, gbc_panelTablero);
+		GridBagLayout gbl_panelTablero = new GridBagLayout();
+		gbl_panelTablero.columnWidths = new int[]{0};
+		gbl_panelTablero.rowHeights = new int[]{0};
+		gbl_panelTablero.columnWeights = new double[]{Double.MIN_VALUE};
+		gbl_panelTablero.rowWeights = new double[]{Double.MIN_VALUE};
+		panelTablero.setLayout(gbl_panelTablero);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-
+		
 		tablero.generarTablero();
 		tablero.colocarMinas(tablero.getTablero());
 		int filas = tablero.getTablero().length;
@@ -73,7 +133,7 @@ public class VentanaJuego extends JFrame {
 				gbc.gridx = j;
 				gbc.gridy = i + 1;
 
-				contentPane.add(tableroInterfaz[i][j], gbc);
+				panelTablero.add(tableroInterfaz[i][j], gbc);
 			}
 		}
 
@@ -81,6 +141,8 @@ public class VentanaJuego extends JFrame {
 		pack();
 	}
 
+	// ----------------------------------------------------------------------------------------------------
+	
 	public void tableroInicial(int i, int j) {
 		tableroInterfaz[i][j] = new JButton();
 		if (i == 0) {

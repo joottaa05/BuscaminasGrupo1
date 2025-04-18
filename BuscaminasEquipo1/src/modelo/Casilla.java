@@ -16,5 +16,4 @@ public class Casilla {
 		this.mina = mina;
 	}
 	
-	
 }
