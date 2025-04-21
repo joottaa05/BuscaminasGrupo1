@@ -21,7 +21,7 @@ public enum Dificultad {
 		return columnas;
 	}
 
-	public int getminas() {
+	public int getminas() { // getminas tendria que ser getMinas (por lo que habria que cambiar varias zonas del programa)
 		return minas;
 	}
 	

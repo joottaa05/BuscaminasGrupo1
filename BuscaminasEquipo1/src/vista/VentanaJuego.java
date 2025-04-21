@@ -21,6 +21,8 @@ import javax.swing.border.MatteBorder;
 
 import modelo.Dificultad;
 import modelo.Tablero;
+import modelo.Usuario;
+
 import java.awt.GridLayout;
 
 public class VentanaJuego extends JFrame {
@@ -30,14 +32,23 @@ public class VentanaJuego extends JFrame {
 	private JLabel temporizador;
 	private JButton[][] tableroInterfaz;
 	private Tablero tablero;
+	private int banderasRestantes;
+	private int espaciosSinMinas;
 
 	// ----------------------------------------------------------------------------------------------------
 	
 	// Falta añadir el numero de banderas (que vaya cambiando segun añadas o quites banderas), la cara y el temporizador
-	// Cuando le das a una mina, no te deja hacer nada mas
+	// Cuando le das a una mina, te deja hacer click a las casillas (cosa que hay que evitar)
 	// Cuando te pasas el juego, no te lleva a VentanaClasificacion
+	// Ahora tiene un contador de espacios sin minas y un contador de banderas (variables)
+	// El de espacios sin minas no esta finalizado: cuando encuentras un espacio con agua, da problemas.
+	// Aun no esta implementada la funcion para modificar la variable banderasRestantes.
 	
-	public VentanaJuego(Dificultad dificultad) {
+	public VentanaJuego(Dificultad dificultad, Usuario usuario) {
+		
+		banderasRestantes = dificultad.getminas();
+		espaciosSinMinas = dificultad.getColumnas() * dificultad.getFilas() - banderasRestantes;
+		
 		tablero = new Tablero(dificultad);
 		setTitle("Juego Buscaminas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -124,6 +135,7 @@ public class VentanaJuego extends JFrame {
 						if (SwingUtilities.isLeftMouseButton(e)) {
 							int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 							destaparCelda(x, y, numero);
+							System.out.println("Espacios sin minas: " + espaciosSinMinas);
 						} else if (SwingUtilities.isRightMouseButton(e)) {
 							comprobarBandera(x, y);
 						}
@@ -178,7 +190,7 @@ public class VentanaJuego extends JFrame {
 			if (numero > 0 && numero <= 8) {
 				fotoSrc = numero + "Mina.gif";
 				actualizarCelda(fotoSrc, x, y);
-
+				espaciosSinMinas -= 1;
 			} else if (numero == -1) {
 				fotoSrc = "explotada.gif";
 				destaparMinas(x, y);
