@@ -44,6 +44,5 @@ public class Main {
 	public static void cerrarJuego() { // Esto hay que hacerlo funcional: que cierre VentanaInicioSesion
 		vis.setVisible(false);
 	}
-	
-	
+		
 }

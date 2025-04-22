@@ -41,8 +41,9 @@ public class VentanaJuego extends JFrame {
 	// Cuando le das a una mina, te deja hacer click a las casillas (cosa que hay que evitar)
 	// Cuando te pasas el juego, no te lleva a VentanaClasificacion
 	// Ahora tiene un contador de espacios sin minas y un contador de banderas (variables)
-	// El de espacios sin minas no esta finalizado: cuando encuentras un espacio con agua, da problemas.
-	// Aun no esta implementada la funcion para modificar la variable banderasRestantes.
+	// El juego acaba cuando espaciosSinMinas llega a 0
+	// Aunque a un espacio le pongas una bandera, puedes hacerle click izquierdo (cosa que no queremos)
+	// Hay una funcion para cambiar el numero de banderas que se muestra por pantalla QUE ESTA SIN ACABAR.
 	
 	public VentanaJuego(Dificultad dificultad, Usuario usuario) {
 		
@@ -52,7 +53,7 @@ public class VentanaJuego extends JFrame {
 		tablero = new Tablero(dificultad);
 		setTitle("Juego Buscaminas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(442, 82);
+		setSize(698, 301);
 		setLocationRelativeTo(null);
 
 		GridBagLayout gbl_contentPane = new GridBagLayout();
@@ -82,6 +83,27 @@ public class VentanaJuego extends JFrame {
 		gbc_panelMinas.gridx = 0;
 		gbc_panelMinas.gridy = 0;
 		panelDatos.add(panelMinas, gbc_panelMinas);
+		GridBagLayout gbl_panelMinas = new GridBagLayout();
+		gbl_panelMinas.columnWidths = new int[]{0, 0};
+		gbl_panelMinas.rowHeights = new int[]{0, 0, 0};
+		gbl_panelMinas.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panelMinas.rowWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		panelMinas.setLayout(gbl_panelMinas);
+		
+		JPanel panelDigito1 = new JPanel();
+		GridBagConstraints gbc_panelDigito1 = new GridBagConstraints();
+		gbc_panelDigito1.insets = new Insets(0, 0, 5, 0);
+		gbc_panelDigito1.fill = GridBagConstraints.BOTH;
+		gbc_panelDigito1.gridx = 0;
+		gbc_panelDigito1.gridy = 0;
+		panelMinas.add(panelDigito1, gbc_panelDigito1);
+		
+		JPanel panelDigito2 = new JPanel();
+		GridBagConstraints gbc_panelDigito2 = new GridBagConstraints();
+		gbc_panelDigito2.fill = GridBagConstraints.BOTH;
+		gbc_panelDigito2.gridx = 0;
+		gbc_panelDigito2.gridy = 1;
+		panelMinas.add(panelDigito2, gbc_panelDigito2);
 		
 		JPanel panelCara = new JPanel();
 		GridBagConstraints gbc_panelCara = new GridBagConstraints();
@@ -148,7 +170,9 @@ public class VentanaJuego extends JFrame {
 				panelTablero.add(tableroInterfaz[i][j], gbc);
 			}
 		}
-
+		
+		
+		
 		setVisible(true);
 		pack();
 	}
@@ -167,6 +191,7 @@ public class VentanaJuego extends JFrame {
 		} else {
 			tableroInterfaz[i][j].setBorder(new MatteBorder(0, 0, 1, 1, new Color(0, 0, 0)));
 		}
+		
 		ImageIcon icono = new ImageIcon("src/imagenes/celda0.gif");
 		Image imagen = icono.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
 		icono = new ImageIcon(imagen);
@@ -196,6 +221,7 @@ public class VentanaJuego extends JFrame {
 				destaparMinas(x, y);
 				return;
 			} else {
+				espaciosSinMinas -= 1;
 				actualizarCelda("sinMina.gif", x, y);
 			}
 			
@@ -210,7 +236,6 @@ public class VentanaJuego extends JFrame {
 				for (int i = 0; i < 8; i++) {
 					int nuevoX = x + calcularPosicionX[i];
 					int nuevoY = y + calcularPosicionY[i];
-
 					if (condicionDestaparAgua(nuevoX, nuevoY)) {
 						int nuevo = tablero.conseguirNumeroCasilla(tablero.getTablero(), nuevoX, nuevoY);
 						if (nuevo >= 0) {
@@ -236,7 +261,6 @@ public class VentanaJuego extends JFrame {
 			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
 				if (tablero.getTablero()[i][j].isMina() && (i != x && j != y)) {
 					actualizarCelda("mina.gif", i, j);
-					
 				}
 				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
 				tableroInterfaz[i][j].setEnabled(false); 
@@ -249,12 +273,35 @@ public class VentanaJuego extends JFrame {
 		ImageIcon iconoImg = (ImageIcon) icono;
 		String ruta = iconoImg.getDescription();
 
-		if (ruta.equals("celda0.gif")) {
+		if (ruta.equals("celda0.gif") && banderasRestantes > 0) {
 			actualizarCelda("bandera.gif", x, y);
+			banderasRestantes -= 1;
+			System.out.println("Banderas restantes: " + banderasRestantes);
 		} else if (ruta.equals("bandera.gif")) {
 			actualizarCelda("interrogante.gif", x, y);
+			banderasRestantes +=1;
+			System.out.println("Banderas restantes: " + banderasRestantes);
 		} else {
 			actualizarCelda("celda0.gif", x, y);
 		}
 	}
+	
+	public void cambiarBanderas(int banderasRestantes) { // No consigo crear una funcion para cambiar el numero de banderas que se muestra en el juego		
+		
+		String banderasRestantesTexto = banderasRestantes + ""; // Recogera los 2 digitos del numero de banderas
+		String digito1 = banderasRestantesTexto.substring(0, 1); // Sera el digito uno: x[] <- (el que tiene []).
+		String digito2 = banderasRestantesTexto.substring(1, 2); // Sera el digito dos: []x <- (el que tiene []).
+		ImageIcon digitoImagen1 = new ImageIcon("src/imagenes/time" + digito1 + ".gif");
+		Image imagen1 = digitoImagen1.getImage().getScaledInstance(50, 25, Image.SCALE_SMOOTH);
+		ImageIcon digitoImagen2 = new ImageIcon("src/imagenes/time" + digito2 + ".gif");
+		Image imagen2 = digitoImagen2.getImage().getScaledInstance(50, 25, Image.SCALE_SMOOTH);
+		digitoImagen1 = new ImageIcon(imagen1);
+		digitoImagen2 = new ImageIcon(imagen2);
+		digitoImagen1.setDescription("src/imagenes/time" + digito1 + ".gif");
+		digitoImagen2.setDescription("src/imagenes/time" + digito2 + ".gif");
+
+		// panelDigito1.setIcon(icono); Sin acabar
+		
+	}
+	
 }
