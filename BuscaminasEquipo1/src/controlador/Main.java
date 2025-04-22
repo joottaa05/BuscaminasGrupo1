@@ -9,7 +9,7 @@ import vista.VentanaJuego;
 
 public class Main {
 	
-	// Version 2.4
+	// Version 2.5
 	
 	// La ventanaJuego ahora tiene 2 jPanels para tener los datos y para tener las minas (el juego sigue siendo funcional).
 	// Ahora hay una clase Usuario para almacenar el nombre y la puntuacion.
