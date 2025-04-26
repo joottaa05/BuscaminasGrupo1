@@ -34,7 +34,7 @@ public class Main {
 			System.out.println("Por favor, introduzca un nombre de usuario.");
 			
 		}else {
-			vj = new VentanaJuego(dificultad, new Usuario(usuario));
+			vj = new VentanaJuego(dificultad);
 			vis.setVisible(false);
 			vj.setVisible(true);
 		}
