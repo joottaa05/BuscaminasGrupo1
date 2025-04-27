@@ -38,6 +38,8 @@ public class VentanaJuego extends JFrame {
 	private Color bordes = new Color(134, 96, 67); // Color personalizado
 	private JButton[][] tableroInterfaz;
 	private Tablero tablero;
+	private Timer timer;
+	public boolean partidaPerdida = false;
 
 	// Constructor de la ventana de juego
 	public VentanaJuego(Dificultad dificultad) {
@@ -102,6 +104,8 @@ public class VentanaJuego extends JFrame {
 	    reset.addMouseListener(new MouseAdapter() {
 	        @Override
 	        public void mouseClicked(MouseEvent e) {
+	        	partidaPerdida = false;
+	        	timer.start();
 	            panelInferior.removeAll();
 	            minasRestantes = dificultad.getminas();
 	            int unidades = minasRestantes % 10;
@@ -215,6 +219,23 @@ public class VentanaJuego extends JFrame {
 						}
 					}
 				});
+				
+				//Mientras se presiona cualquier celda, la cara del reset cambia
+				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						if(SwingUtilities.isLeftMouseButton(e) && !partidaPerdida) {
+							actualizarReset("reset2.gif");
+						}
+					}	
+				});
+				
+				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
+					public void mouseReleased(MouseEvent e) {
+						if(SwingUtilities.isLeftMouseButton(e) && !partidaPerdida) {
+							actualizarReset("reset.gif");
+						}
+					}	
+				});
 
 				// Añade el botón a la cuadrícula
 				this.gbc.gridx = j;
@@ -224,10 +245,11 @@ public class VentanaJuego extends JFrame {
 		}
 	}
 
+	//Carga previamente las imagenes para no tener que hacerlo cada vez que se actualizan (optimización)
 	private void cargarImagenes() {
 		String[] nombres = { "celda0.gif", "bandera.gif", "interrogante.gif", "explotada.gif", "mina.gif", "1Mina.gif",
 				"2Mina.gif", "3Mina.gif", "4Mina.gif", "5Mina.gif", "6Mina.gif", "7Mina.gif", "8Mina.gif",
-				"sinMina.gif" };
+				"sinMina.gif", "reset.gif", "reset2.gif" };
 
 		for (String nombre : nombres) {
 			ImageIcon icono = new ImageIcon("src/imagenes/" + nombre);
@@ -237,10 +259,17 @@ public class VentanaJuego extends JFrame {
 		}
 	}
 
-	// Luego, actualizarCelda solo hace:
+	// Actualiza las imagenes del tablero
 	public void actualizarCelda(String fotoSrc, int i, int j) {
 		ImageIcon iconLogo = imagenesCacheadas.get(fotoSrc);
 		tableroInterfaz[i][j].setIcon(iconLogo);
+		iconLogo.setDescription(fotoSrc);
+	}
+	
+	//Actualiza la imagen del botón de reset
+	public void actualizarReset(String fotoSrc) {
+		ImageIcon iconLogo = imagenesCacheadas.get(fotoSrc);
+		reset.setIcon(iconLogo);
 		iconLogo.setDescription(fotoSrc);
 	}
 
@@ -294,6 +323,8 @@ public class VentanaJuego extends JFrame {
 
 	// Destapa todas las minas al explotar una
 	public void destaparMinas(int x, int y) {
+		timer.stop();
+		partidaPerdida = true;
 		actualizarCelda("explotada.gif", x, y);
 		tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
 		tableroInterfaz[x][y].setEnabled(false);
@@ -308,6 +339,19 @@ public class VentanaJuego extends JFrame {
 			}
 		}
 	}
+	
+	public void finalizarPartida() {
+		timer.stop();
+		partidaPerdida = true;
+		for (int i = 0; i < tablero.getTablero().length; i++) {
+			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
+					actualizarCelda("mina.gif", i, j);
+				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
+				tableroInterfaz[i][j].setEnabled(false);
+			}
+		}
+	}
+	
 
 	// Cambia el icono de la celda al hacer clic derecho
 	public void comprobarBandera(int x, int y) {
@@ -317,10 +361,14 @@ public class VentanaJuego extends JFrame {
 
 		if (ruta.equals("celda0.gif")) {
 			actualizarCelda("bandera.gif", x, y);
+			if(tableroInterfaz[x][y].isEnabled()) {
 			this.minasRestantes--;
+			}
 		} else if (ruta.equals("bandera.gif")) {
 			actualizarCelda("interrogante.gif", x, y);
+			if(tableroInterfaz[x][y].isEnabled()) {
 			this.minasRestantes++;
+			}
 		} else {
 			actualizarCelda("celda0.gif", x, y);
 		}
@@ -355,9 +403,13 @@ public class VentanaJuego extends JFrame {
 	
 	public void temporizador() {
 	    // Crea un Timer que se ejecuta cada 1000 milisegundos (1 segundo)
-	    Timer timer = new Timer(1000, new ActionListener() {
+	    timer = new Timer(1000, new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
+	        	//Si el timepo es 999 la partida acaba
+	        	if(tiempo >= 999) {
+	        		finalizarPartida();
+	        	}
 	            tiempo++; // Aumenta el tiempo en 1 segundo
 
 	            // Actualiza el temporizador visual (unidades, decenas, centenas)
