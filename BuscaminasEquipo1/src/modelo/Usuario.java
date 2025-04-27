@@ -8,17 +8,13 @@ public class Usuario {
 	private String nombre;
 	private float puntuacion;
 	
-	public Usuario (String nombre) {
+	public Usuario (String nombre, float puntuacion) {
 		this.nombre = nombre;
 	}
 
 	
 	public float getPuntuacion() {
 		return puntuacion;
-	}
-
-	public void setPuntuacion(float puntuacion) {
-		this.puntuacion = puntuacion;
 	}
 
 	public String getNombre() {

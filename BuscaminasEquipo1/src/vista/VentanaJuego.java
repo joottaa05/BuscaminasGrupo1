@@ -346,9 +346,9 @@ public class VentanaJuego extends JFrame {
 	        for (int j = 0; j < tablero.getTablero()[i].length; j++) {
 	            if (tablero.getTablero()[i][j].isMina() && !(i == x && j == y)) {
 	                actualizarCelda("mina.gif", i, j);
-	                tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
-	                tableroInterfaz[i][j].setEnabled(false);
 	            }
+	            tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
+                tableroInterfaz[i][j].setEnabled(false);
 	        }
 	    }
 	}
@@ -372,7 +372,8 @@ public class VentanaJuego extends JFrame {
 		ImageIcon iconoImg = (ImageIcon) icono;
 		String ruta = iconoImg.getDescription();
 
-		if (ruta.equals("celda0.gif")) {
+		
+		if (ruta.equals("celda0.gif") && minasRestantes>0) {
 			actualizarCelda("bandera.gif", x, y);
 			if(tableroInterfaz[x][y].isEnabled()) {
 			this.minasRestantes--;
