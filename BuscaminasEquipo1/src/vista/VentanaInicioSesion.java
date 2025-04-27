@@ -133,7 +133,7 @@ public class VentanaInicioSesion extends JFrame {
 		JButton btnSalir = new JButton("Salir");
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				dispose();
 			}
 		});
 		btnSalir.setForeground(new Color(49, 63, 79));

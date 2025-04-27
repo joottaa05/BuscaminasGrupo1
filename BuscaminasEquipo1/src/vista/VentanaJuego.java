@@ -92,15 +92,14 @@ public class VentanaJuego extends JFrame {
 	    reset = new JButton();
 	    ImageIcon iconoReset = new ImageIcon("src/imagenes/reset.gif");
 	    Image image = iconoReset.getImage();
-	    Image scaledImage = image.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	    Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
 	    iconoReset = new ImageIcon(scaledImage);
 	    reset.setIcon(iconoReset);
 
 	    reset.setContentAreaFilled(false);
 	    reset.setFocusPainted(false);
 	    reset.setOpaque(false);
-	    reset.setBorder(null); // Sin borde gris
-
+	    reset.setBorder(new MatteBorder(2, 2, 2, 2, new Color(155,155,155))); //Borde para distinguir el botón de reset
 	    reset.addMouseListener(new MouseAdapter() {
 	        @Override
 	        public void mouseClicked(MouseEvent e) {
@@ -223,7 +222,7 @@ public class VentanaJuego extends JFrame {
 				//Mientras se presiona cualquier celda, la cara del reset cambia
 				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
-						if(SwingUtilities.isLeftMouseButton(e) && !partidaPerdida) {
+						if(!partidaPerdida) {
 							actualizarReset("reset2.gif");
 						}
 					}	
@@ -231,7 +230,7 @@ public class VentanaJuego extends JFrame {
 				
 				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
 					public void mouseReleased(MouseEvent e) {
-						if(SwingUtilities.isLeftMouseButton(e) && !partidaPerdida) {
+						if(!partidaPerdida) {
 							actualizarReset("reset.gif");
 						}
 					}	
