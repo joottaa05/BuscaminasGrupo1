@@ -103,15 +103,27 @@ public class VentanaJuego extends JFrame {
 	    reset.addMouseListener(new MouseAdapter() {
 	        @Override
 	        public void mouseClicked(MouseEvent e) {
-	        	partidaPerdida = false;
-	        	timer.start();
+	        	//Reseteo del panel inferior al completo
 	            panelInferior.removeAll();
+	            panelInferior.setLayout(new GridBagLayout());
+	            gbc = generarEstructuraTablero(); 
+	            
+	          //Reinicio de la variable partida perdida
+	        	partidaPerdida = false;
+	        	//Reinicio del timer
+	        	timer.start();
+	            
+	            //Reseteo de la logica del tablero
+	            tablero = new Tablero(dificultad);
+	            generarTableroMinas();
+	            //Reset del contador de minas
 	            minasRestantes = dificultad.getminas();
 	            int unidades = minasRestantes % 10;
 	            int decenas = minasRestantes / 10;
 	            actualizarContador(unidadesMinas, unidades);
 	            actualizarContador(decenasMinas, decenas);
 	            
+	            //Reset del contador del tiempo
 	            tiempo = 0;
 	            int unidad = tiempo % 10;
 	            int decena = (tiempo / 10) % 10;
@@ -120,8 +132,7 @@ public class VentanaJuego extends JFrame {
 	            actualizarContador(temporizadorUd, unidad);
 	            actualizarContador(temporizadorDecenas, decena);
 	            actualizarContador(temporizadorCentenas, centena);
-	            tablero = new Tablero(dificultad);
-	            generarTableroMinas();
+	            
 	            contentPanel.revalidate();
 	            contentPanel.repaint();
 	        }
@@ -322,21 +333,24 @@ public class VentanaJuego extends JFrame {
 
 	// Destapa todas las minas al explotar una
 	public void destaparMinas(int x, int y) {
-		timer.stop();
-		partidaPerdida = true;
-		actualizarCelda("explotada.gif", x, y);
-		tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
-		tableroInterfaz[x][y].setEnabled(false);
+	    timer.stop();
+	    partidaPerdida = true;
+	    
+	    // Marca la mina que explotó
+	    actualizarCelda("explotada.gif", x, y);
+	    tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
+	    tableroInterfaz[x][y].setEnabled(false);
 
-		for (int i = 0; i < tablero.getTablero().length; i++) {
-			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
-				if (tablero.getTablero()[i][j].isMina() && (i != x && j != y)) {
-					actualizarCelda("mina.gif", i, j);
-				}
-				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
-				tableroInterfaz[i][j].setEnabled(false);
-			}
-		}
+	    // Muestra todas las demás minas
+	    for (int i = 0; i < tablero.getTablero().length; i++) {
+	        for (int j = 0; j < tablero.getTablero()[i].length; j++) {
+	            if (tablero.getTablero()[i][j].isMina() && !(i == x && j == y)) {
+	                actualizarCelda("mina.gif", i, j);
+	                tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
+	                tableroInterfaz[i][j].setEnabled(false);
+	            }
+	        }
+	    }
 	}
 	
 	public void finalizarPartida() {
