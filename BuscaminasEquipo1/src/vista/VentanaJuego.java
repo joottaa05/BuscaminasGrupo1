@@ -10,8 +10,11 @@ import java.util.Map;
 
 import javax.swing.*; // Importa componentes de Swing
 import javax.swing.border.*; // Importa bordes
+
+import controlador.Main;
 import modelo.Dificultad;
 import modelo.Tablero;
+import modelo.Usuario;
 
 public class VentanaJuego extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -33,6 +36,7 @@ public class VentanaJuego extends JFrame {
 	private int filas;
 	private int columnas;
 	private int minasRestantes;
+	private int panelesSinMinasRestantes; // Esto servira para decidir CUANDO el jugador gana el juego (el cual sera cuando no quede ningun espacio sin minas)
 	private int tiempo = 0;
 	private GridBagConstraints gbc;
 	private Color bordes = new Color(134, 96, 67); // Color personalizado
@@ -42,7 +46,7 @@ public class VentanaJuego extends JFrame {
 	public boolean partidaPerdida = false;
 
 	// Constructor de la ventana de juego
-	public VentanaJuego(Dificultad dificultad) {
+	public VentanaJuego(String usuario, Dificultad dificultad) {
 	    cargarImagenes();
 	    tablero = new Tablero(dificultad); // Inicializa la lógica del tablero
 	    setTitle("Juego Buscaminas");
@@ -51,6 +55,7 @@ public class VentanaJuego extends JFrame {
 	    setLocationRelativeTo(null);
 
 	    this.minasRestantes = dificultad.getminas(); // Número de minas
+
 	    temporizador();
 	    // Panel principal
 	    contentPanel = new JPanel();
@@ -121,7 +126,7 @@ public class VentanaJuego extends JFrame {
 	            actualizarContador(temporizadorDecenas, decena);
 	            actualizarContador(temporizadorCentenas, centena);
 	            tablero = new Tablero(dificultad);
-	            generarTableroMinas();
+	            generarTableroMinas(usuario, dificultad);
 	            contentPanel.revalidate();
 	            contentPanel.repaint();
 	        }
@@ -162,7 +167,7 @@ public class VentanaJuego extends JFrame {
 
 	    // Crea tablero
 	    gbc = generarEstructuraTablero();
-	    generarTableroMinas();
+	    generarTableroMinas(usuario, dificultad);
 	    setVisible(true);
 	    pack();
 	}
@@ -186,14 +191,25 @@ public class VentanaJuego extends JFrame {
 	}
 
 	// Genera el tablero visualmente
-	public void generarTableroMinas() {
+	public void generarTableroMinas(String usuario, Dificultad dificultad) {
 		tablero.generarTablero(); // Genera matriz
 		tablero.colocarMinas(tablero.getTablero()); // Coloca minas
 
 		this.filas = tablero.getTablero().length;
 		this.columnas = tablero.getTablero()[0].length;
+	    this.panelesSinMinasRestantes = filas * columnas - minasRestantes; // Número de paneles sin minas (cuando no haya ningun panel sin minas el jugador gana)
+	    int casillas = panelesSinMinasRestantes; // Solo es para almacenar el numero de paneles sin minas que tuvo el usuario que descubrir (se usara esto para la puntuacion)
 		tableroInterfaz = new JButton[filas][columnas];
-
+		
+		// Esto sirve para la puntuacion
+		// Los if estan causando un error
+		int coeficienteDificultad = 1;
+		if(dificultad == Dificultad.valueOf("Intermedio")) {
+			coeficienteDificultad = 2;
+		}else if (dificultad == Dificultad.valueOf("Dificil")) {
+			coeficienteDificultad = 3;
+		}
+		
 		for (int i = 0; i < filas; i++) {
 			for (int j = 0; j < columnas; j++) {
 				tableroInicial(i, j);
@@ -209,9 +225,13 @@ public class VentanaJuego extends JFrame {
 							ImageIcon iconoImg = (ImageIcon) icono;
 							String ruta = iconoImg.getDescription();
 
-							if (!ruta.equals("bandera.gif")) {
+							if (!ruta.equals("bandera.gif")) { // Si se le hace click (izquierdo) a algo que NO sea una bandera		
 								int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 								destaparCelda(x, y, numero);
+								if(panelesSinMinasRestantes < 1) { // Si ya no hay mas paneles sin minas
+									float puntuacion = casillas * coeficienteDificultad / tiempo;
+									Main.abrirClasificacion(new Usuario (usuario, puntuacion)); // Abre la clasificacion y cierra el juego.
+								}
 							}
 						} else if (SwingUtilities.isRightMouseButton(e)) {
 							comprobarBandera(x, y);
@@ -281,12 +301,14 @@ public class VentanaJuego extends JFrame {
 			if (numero > 0 && numero <= 8) {
 				fotoSrc = numero + "Mina.gif";
 				actualizarCelda(fotoSrc, x, y);
+				panelesSinMinasRestantes--;
 			} else if (numero == -1) {
 				fotoSrc = "explotada.gif"; // Si es una mina, explota
 				destaparMinas(x, y);
 				return;
 			} else {
 				actualizarCelda("sinMina.gif", x, y);
+				panelesSinMinasRestantes--;
 			}
 
 			// Deshabilita el botón
@@ -323,7 +345,7 @@ public class VentanaJuego extends JFrame {
 	// Destapa todas las minas al explotar una
 	public void destaparMinas(int x, int y) {
 		timer.stop();
-		partidaPerdida = true;
+		partidaPerdida = true; // Esto establece que el jugador perdio (puse el comentario por si alguien buscaba esto)
 		actualizarCelda("explotada.gif", x, y);
 		tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
 		tableroInterfaz[x][y].setEnabled(false);
@@ -339,7 +361,7 @@ public class VentanaJuego extends JFrame {
 		}
 	}
 	
-	public void finalizarPartida() {
+	public void finalizarPartida() { // Si el tiempo llega a 999 el jugador pierde automaticamente (breve explicacion)
 		timer.stop();
 		partidaPerdida = true;
 		for (int i = 0; i < tablero.getTablero().length; i++) {
