@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -249,6 +252,30 @@ public class VentanaJuego extends JFrame {
 								if (celdasRestantes == dificultad.getminas()) {
 									comprobarVictoria(tableroInterfaz);
 									if (partidaGanada) {
+										timer.stop();
+										int puntuacion = 1000 - tiempo;
+										
+										if(dificultad.equals(Dificultad.Intermedio)) {
+											puntuacion *= 2;
+										} else if (dificultad.equals(Dificultad.Dificil)) {
+											puntuacion *= 3;
+										}
+										
+										BufferedWriter out = null;
+										try {
+											out = new BufferedWriter(new FileWriter("src/clasificacion.txt",true));
+											out.write(user.getNombre() + "," + puntuacion);
+											out.newLine();
+										} catch (IOException e1) {
+											e1.printStackTrace();
+										} finally {
+											try {
+												out.close();
+											} catch (IOException e1) {
+												e1.printStackTrace();
+											}
+										}
+										
 										Main.abrirClasificacion(user);
 									}
 								}

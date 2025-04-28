@@ -6,15 +6,9 @@ public class Usuario {
 	// En caso de ganar, lo que contenga esta clase se guardara en el fichero clasificacion.
 	
 	private String nombre;
-	private float puntuacion;
 	
-	public Usuario (String nombre, float puntuacion) {
+	public Usuario (String nombre) {
 		this.nombre = nombre;
-	}
-
-	
-	public float getPuntuacion() {
-		return puntuacion;
 	}
 
 	public String getNombre() {

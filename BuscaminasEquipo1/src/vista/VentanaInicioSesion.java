@@ -21,6 +21,10 @@ import javax.swing.JToggleButton;
 import javax.swing.JComboBox;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.SystemColor;
@@ -31,8 +35,9 @@ public class VentanaInicioSesion extends JFrame {
 	private JPanel contentPane;
 	private JTextField textFieldUsuario;
 
-	// Falta hacer funcionar el boton Salir (en los requisitos del proyecto pedia hacer este boton).
-	
+	// Falta hacer funcionar el boton Salir (en los requisitos del proyecto pedia
+	// hacer este boton).
+
 	public VentanaInicioSesion() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 334, 184);
@@ -126,8 +131,38 @@ public class VentanaInicioSesion extends JFrame {
 		btnJugar.setForeground(new Color(49, 63, 79));
 		btnJugar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Usuario user = new Usuario(textFieldUsuario.getText(), 0);
-				Main.abrirJuego(user, Dificultad.valueOf(dificultad.getSelectedItem().toString()));
+				BufferedReader in = null;
+				try {
+					in = new BufferedReader(new FileReader("src/clasificacion.txt"));
+					
+					String nombre;
+						boolean nombreRepetido = false;
+						while((nombre = in.readLine()) != null) {
+							String nombreUsuario = nombre.split(",")[0];
+							if(textFieldUsuario.getText().equals(nombreUsuario)) {
+								nombreRepetido = true;
+								break;
+							}
+						}
+						
+						if(!nombreRepetido) {
+						Usuario user = new Usuario(textFieldUsuario.getText());
+						Main.abrirJuego(user, Dificultad.valueOf(dificultad.getSelectedItem().toString()));
+						}
+						
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}  catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} finally {
+					try {
+						in.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 			}
 		});
 		btnJugar.setFont(new Font("Segoe UI", Font.PLAIN, 14));

@@ -11,6 +11,13 @@ import modelo.Usuario;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Font;
@@ -19,10 +26,35 @@ public class VentanaClasificacion extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private ArrayList<String> clasificacion = new ArrayList<>();
 
 	// Esto aun no se abre.
 	
 	public VentanaClasificacion(Usuario user) {
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader("src/clasificacion.txt"));
+	        
+	        String linea;
+	        while ((linea = br.readLine()) != null) {
+	        	clasificacion.add(linea);
+	        }
+	        
+
+	        Collections.sort(clasificacion);
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		for(String s: clasificacion) {
+			System.out.println(s);
+		}
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
