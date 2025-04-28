@@ -10,8 +10,11 @@ import java.util.Map;
 
 import javax.swing.*; // Importa componentes de Swing
 import javax.swing.border.*; // Importa bordes
+
+import controlador.Main;
 import modelo.Dificultad;
 import modelo.Tablero;
+import modelo.Usuario;
 
 public class VentanaJuego extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -40,142 +43,160 @@ public class VentanaJuego extends JFrame {
 	private Tablero tablero;
 	private Timer timer;
 	public boolean partidaPerdida = false;
+	private boolean partidaGanada = false;
+	private Usuario user;
+	private int celdasRestantes;
+	private Dificultad dificultad;
 
 	// Constructor de la ventana de juego
-	public VentanaJuego(Dificultad dificultad) {
-	    cargarImagenes();
-	    tablero = new Tablero(dificultad); // Inicializa la lógica del tablero
-	    setTitle("Juego Buscaminas");
-	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    setSize(600, 600);
-	    setLocationRelativeTo(null);
+	public VentanaJuego(Usuario user, Dificultad dificultad) {
+		// Carga el nombre de usuario
+		this.user = user;
+		this.dificultad = dificultad;
 
-	    this.minasRestantes = dificultad.getminas(); // Número de minas
-	    temporizador();
-	    // Panel principal
-	    contentPanel = new JPanel();
-	    contentPanel.setLayout(new BorderLayout());
-	    contentPanel.setBorder(new LineBorder(bordes, 4));
-	    setContentPane(contentPanel);
+		// Precarga todas las imagenes
+		cargarImagenes();
+		tablero = new Tablero(dificultad); // Inicializa la lógica del tablero
+		setTitle("Juego Buscaminas");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(600, 600);
+		setLocationRelativeTo(null);
 
-	    // Panel superior
-	    panelSuperior = new JPanel();
-	    panelSuperior.setPreferredSize(new Dimension(200, 50));
-	    panelSuperior.setBackground(bordes); // Todo marrón
-	    panelSuperior.setLayout(new BorderLayout());
-	    panelSuperior.setBorder(new LineBorder(bordes, 4));
+		this.minasRestantes = dificultad.getminas(); // Número de minas
+		temporizador();
+		// Panel principal
+		contentPanel = new JPanel();
+		contentPanel.setLayout(new BorderLayout());
+		contentPanel.setBorder(new LineBorder(bordes, 4));
+		setContentPane(contentPanel);
 
-	    // Panel minas restantes
-	    panelMinas = new JPanel();
-	    panelMinas.setLayout(new GridLayout(1, 2));
-	    panelMinas.setBackground(bordes); // Fondo marrón
-	    panelMinas.setBorder(null);        // Sin borde
-	    panelSuperior.add(panelMinas, BorderLayout.WEST);
+		// Panel superior
+		panelSuperior = new JPanel();
+		panelSuperior.setPreferredSize(new Dimension(200, 50));
+		panelSuperior.setBackground(bordes); // Todo marrón
+		panelSuperior.setLayout(new BorderLayout());
+		panelSuperior.setBorder(new LineBorder(bordes, 4));
 
-	    int unidades = this.minasRestantes % 10;
-	    int decenas = this.minasRestantes / 10;
+		// Panel minas restantes
+		panelMinas = new JPanel();
+		panelMinas.setLayout(new GridLayout(1, 2));
+		panelMinas.setBackground(bordes); // Fondo marrón
+		panelMinas.setBorder(null); // Sin borde
+		panelSuperior.add(panelMinas, BorderLayout.WEST);
 
-	    decenasMinas = new JLabel();
-	    actualizarContador(decenasMinas, decenas);
-	    panelMinas.add(decenasMinas);
+		int unidades = this.minasRestantes % 10;
+		int decenas = this.minasRestantes / 10;
 
-	    unidadesMinas = new JLabel();
-	    actualizarContador(unidadesMinas, unidades);
-	    panelMinas.add(unidadesMinas);
+		decenasMinas = new JLabel();
+		actualizarContador(decenasMinas, decenas);
+		panelMinas.add(decenasMinas);
 
-	    // Panel reset
-	    panelReset = new JPanel();
-	    panelReset.setBackground(bordes); // Fondo marrón
-	    panelReset.setBorder(null);
-	    panelReset.setLayout(new GridBagLayout()); // Centrado del botón
+		unidadesMinas = new JLabel();
+		actualizarContador(unidadesMinas, unidades);
+		panelMinas.add(unidadesMinas);
 
-	    reset = new JButton();
-	    ImageIcon iconoReset = new ImageIcon("src/imagenes/reset.gif");
-	    Image image = iconoReset.getImage();
-	    Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-	    iconoReset = new ImageIcon(scaledImage);
-	    reset.setIcon(iconoReset);
+		// Panel reset
+		panelReset = new JPanel();
+		panelReset.setBackground(bordes); // Fondo marrón
+		panelReset.setBorder(null);
+		panelReset.setLayout(new GridBagLayout()); // Centrado del botón
 
-	    reset.setContentAreaFilled(false);
-	    reset.setFocusPainted(false);
-	    reset.setOpaque(false);
-	    reset.setBorder(new MatteBorder(2, 2, 2, 2, new Color(155,155,155))); //Borde para distinguir el botón de reset
-	    reset.addMouseListener(new MouseAdapter() {
-	        @Override
-	        public void mouseClicked(MouseEvent e) {
-	        	//Reseteo del panel inferior al completo
-	            panelInferior.removeAll();
-	            panelInferior.setLayout(new GridBagLayout());
-	            gbc = generarEstructuraTablero(); 
-	            
-	          //Reinicio de la variable partida perdida
-	        	partidaPerdida = false;
-	        	//Reinicio del timer
-	        	timer.start();
-	            
-	            //Reseteo de la logica del tablero
-	            tablero = new Tablero(dificultad);
-	            generarTableroMinas();
-	            //Reset del contador de minas
-	            minasRestantes = dificultad.getminas();
-	            int unidades = minasRestantes % 10;
-	            int decenas = minasRestantes / 10;
-	            actualizarContador(unidadesMinas, unidades);
-	            actualizarContador(decenasMinas, decenas);
-	            
-	            //Reset del contador del tiempo
-	            tiempo = 0;
-	            int unidad = tiempo % 10;
-	            int decena = (tiempo / 10) % 10;
-	            int centena = tiempo / 100;
+		reset = new JButton();
+		ImageIcon iconoReset = new ImageIcon("src/imagenes/reset.gif");
+		Image image = iconoReset.getImage();
+		Image scaledImage = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		iconoReset = new ImageIcon(scaledImage);
+		reset.setIcon(iconoReset);
 
-	            actualizarContador(temporizadorUd, unidad);
-	            actualizarContador(temporizadorDecenas, decena);
-	            actualizarContador(temporizadorCentenas, centena);
-	            
-	            contentPanel.revalidate();
-	            contentPanel.repaint();
-	        }
-	    });
+		reset.setContentAreaFilled(false);
+		reset.setFocusPainted(false);
+		reset.setOpaque(false);
+		reset.setBorder(new MatteBorder(2, 2, 2, 2, new Color(155, 155, 155))); // Borde para distinguir el botón de
+																				// reset
+		reset.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// Reseteo del panel inferior al completo
+				panelInferior.removeAll();
+				panelInferior.setLayout(new GridBagLayout());
+				gbc = generarEstructuraTablero();
 
-	    panelReset.add(reset); // Agrega el botón reset al panel
-	    panelSuperior.add(panelReset, BorderLayout.CENTER); // Ahora agregas el panelReset
+				// Reinicio de la variable partida perdida
+				partidaPerdida = false;
+				partidaGanada = false;
+				celdasRestantes = dificultad.getFilas() * dificultad.getColumnas();
+				// Reinicio del timer
+				timer.start();
 
-	    // Panel temporizador
-	    panelTemporizador = new JPanel();
-	    panelTemporizador.setLayout(new GridLayout(1, 3));
-	    panelTemporizador.setBackground(bordes); // Fondo marrón
-	    panelTemporizador.setBorder(null);
-	    panelSuperior.add(panelTemporizador, BorderLayout.EAST);
+				// Reseteo de la logica del tablero
+				tablero = new Tablero(dificultad);
+				generarTableroMinas();
+				// Reset del contador de minas
+				minasRestantes = dificultad.getminas();
+				int unidades = minasRestantes % 10;
+				int decenas = minasRestantes / 10;
+				actualizarContador(unidadesMinas, unidades);
+				actualizarContador(decenasMinas, decenas);
 
-	    int unidad = tiempo % 10;
-	    int decena = (tiempo / 10) % 10;
-	    int centena = tiempo % 100;
-	    
-	    temporizadorCentenas = new JLabel();
-	    actualizarContador(temporizadorCentenas, centena);
-	    panelTemporizador.add(temporizadorCentenas);
-	    
-	    temporizadorDecenas = new JLabel();
-	    actualizarContador(temporizadorDecenas, decena);
-	    panelTemporizador.add(temporizadorDecenas);
-	    
-	    temporizadorUd = new JLabel();
-	    actualizarContador(temporizadorUd, unidad);
-	    panelTemporizador.add(temporizadorUd);
+				// Reset del contador del tiempo
+				tiempo = 0;
+				int unidad = tiempo % 10;
+				int decena = (tiempo / 10) % 10;
+				int centena = tiempo / 100;
 
-	    // Panel inferior (tablero)
-	    panelInferior = new JPanel();
-	    panelInferior.setLayout(new GridBagLayout());
+				actualizarContador(temporizadorUd, unidad);
+				actualizarContador(temporizadorDecenas, decena);
+				actualizarContador(temporizadorCentenas, centena);
 
-	    contentPanel.add(panelSuperior, BorderLayout.NORTH);
-	    contentPanel.add(panelInferior, BorderLayout.CENTER);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
 
-	    // Crea tablero
-	    gbc = generarEstructuraTablero();
-	    generarTableroMinas();
-	    setVisible(true);
-	    pack();
+		panelReset.add(reset); // Agrega el botón reset al panel
+		panelSuperior.add(panelReset, BorderLayout.CENTER); // Ahora agregas el panelReset
+
+		// Panel temporizador
+		panelTemporizador = new JPanel();
+		panelTemporizador.setLayout(new GridLayout(1, 3));
+		panelTemporizador.setBackground(bordes); // Fondo marrón
+		panelTemporizador.setBorder(null);
+		panelSuperior.add(panelTemporizador, BorderLayout.EAST);
+
+		int unidad = tiempo % 10;
+		int decena = (tiempo / 10) % 10;
+		int centena = tiempo % 100;
+
+		temporizadorCentenas = new JLabel();
+		actualizarContador(temporizadorCentenas, centena);
+		panelTemporizador.add(temporizadorCentenas);
+
+		temporizadorDecenas = new JLabel();
+		actualizarContador(temporizadorDecenas, decena);
+		panelTemporizador.add(temporizadorDecenas);
+
+		temporizadorUd = new JLabel();
+		actualizarContador(temporizadorUd, unidad);
+		panelTemporizador.add(temporizadorUd);
+
+		// Panel inferior (tablero)
+		panelInferior = new JPanel();
+		panelInferior.setLayout(new GridBagLayout());
+
+		contentPanel.add(panelSuperior, BorderLayout.NORTH);
+		contentPanel.add(panelInferior, BorderLayout.CENTER);
+
+		// Crea tablero
+		gbc = generarEstructuraTablero();
+		generarTableroMinas();
+
+		// Celdas restantes incia en el máximo
+		this.celdasRestantes = this.filas * this.columnas;
+
+		// Hace el panel general visible y agrupa los paneles para que no queden
+		// imagenes sueltas
+		setVisible(true);
+		pack();
 	}
 
 	// Inicializa cada botón del tablero
@@ -223,28 +244,36 @@ public class VentanaJuego extends JFrame {
 							if (!ruta.equals("bandera.gif")) {
 								int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 								destaparCelda(x, y, numero);
+								celdasRestantes--;
+								System.out.println(celdasRestantes);
+								if (celdasRestantes == dificultad.getminas()) {
+									comprobarVictoria(tableroInterfaz);
+									if (partidaGanada) {
+										Main.abrirClasificacion(user);
+									}
+								}
 							}
 						} else if (SwingUtilities.isRightMouseButton(e)) {
 							comprobarBandera(x, y);
 						}
 					}
 				});
-				
-				//Mientras se presiona cualquier celda, la cara del reset cambia
+
+				// Mientras se presiona cualquier celda, la cara del reset cambia
 				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
-						if(!partidaPerdida) {
+						if (!partidaPerdida) {
 							actualizarReset("reset2.gif");
 						}
-					}	
+					}
 				});
-				
+
 				tableroInterfaz[i][j].addMouseListener(new MouseAdapter() {
 					public void mouseReleased(MouseEvent e) {
-						if(!partidaPerdida) {
+						if (!partidaPerdida) {
 							actualizarReset("reset.gif");
 						}
-					}	
+					}
 				});
 
 				// Añade el botón a la cuadrícula
@@ -255,7 +284,8 @@ public class VentanaJuego extends JFrame {
 		}
 	}
 
-	//Carga previamente las imagenes para no tener que hacerlo cada vez que se actualizan (optimización)
+	// Carga previamente las imagenes para no tener que hacerlo cada vez que se
+	// actualizan (optimización)
 	private void cargarImagenes() {
 		String[] nombres = { "celda0.gif", "bandera.gif", "interrogante.gif", "explotada.gif", "mina.gif", "1Mina.gif",
 				"2Mina.gif", "3Mina.gif", "4Mina.gif", "5Mina.gif", "6Mina.gif", "7Mina.gif", "8Mina.gif",
@@ -275,8 +305,8 @@ public class VentanaJuego extends JFrame {
 		tableroInterfaz[i][j].setIcon(iconLogo);
 		iconLogo.setDescription(fotoSrc);
 	}
-	
-	//Actualiza la imagen del botón de reset
+
+	// Actualiza la imagen del botón de reset
 	public void actualizarReset(String fotoSrc) {
 		ImageIcon iconLogo = imagenesCacheadas.get(fotoSrc);
 		reset.setIcon(iconLogo);
@@ -317,6 +347,7 @@ public class VentanaJuego extends JFrame {
 						int nuevo = tablero.conseguirNumeroCasilla(tablero.getTablero(), nuevoX, nuevoY);
 						if (nuevo >= 0) {
 							destaparCelda(nuevoX, nuevoY, nuevo);
+							celdasRestantes--;
 						}
 					}
 				}
@@ -333,38 +364,37 @@ public class VentanaJuego extends JFrame {
 
 	// Destapa todas las minas al explotar una
 	public void destaparMinas(int x, int y) {
-	    timer.stop();
-	    partidaPerdida = true;
-	    
-	    // Marca la mina que explotó
-	    actualizarCelda("explotada.gif", x, y);
-	    tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
-	    tableroInterfaz[x][y].setEnabled(false);
-
-	    // Muestra todas las demás minas
-	    for (int i = 0; i < tablero.getTablero().length; i++) {
-	        for (int j = 0; j < tablero.getTablero()[i].length; j++) {
-	            if (tablero.getTablero()[i][j].isMina() && !(i == x && j == y)) {
-	                actualizarCelda("mina.gif", i, j);
-	            }
-	            tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
-                tableroInterfaz[i][j].setEnabled(false);
-	        }
-	    }
-	}
-	
-	public void finalizarPartida() {
 		timer.stop();
 		partidaPerdida = true;
+
+		// Marca la mina que explotó
+		actualizarCelda("explotada.gif", x, y);
+		tableroInterfaz[x][y].setDisabledIcon(tableroInterfaz[x][y].getIcon());
+		tableroInterfaz[x][y].setEnabled(false);
+
+		// Muestra todas las demás minas
 		for (int i = 0; i < tablero.getTablero().length; i++) {
 			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
+				if (tablero.getTablero()[i][j].isMina() && !(i == x && j == y)) {
 					actualizarCelda("mina.gif", i, j);
+				}
 				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
 				tableroInterfaz[i][j].setEnabled(false);
 			}
 		}
 	}
-	
+
+	public void finalizarPartida() {
+		timer.stop();
+		partidaPerdida = true;
+		for (int i = 0; i < tablero.getTablero().length; i++) {
+			for (int j = 0; j < tablero.getTablero()[i].length; j++) {
+				actualizarCelda("mina.gif", i, j);
+				tableroInterfaz[i][j].setDisabledIcon(tableroInterfaz[i][j].getIcon());
+				tableroInterfaz[i][j].setEnabled(false);
+			}
+		}
+	}
 
 	// Cambia el icono de la celda al hacer clic derecho
 	public void comprobarBandera(int x, int y) {
@@ -372,16 +402,15 @@ public class VentanaJuego extends JFrame {
 		ImageIcon iconoImg = (ImageIcon) icono;
 		String ruta = iconoImg.getDescription();
 
-		
-		if (ruta.equals("celda0.gif") && minasRestantes>0) {
+		if (ruta.equals("celda0.gif") && minasRestantes > 0) {
 			actualizarCelda("bandera.gif", x, y);
-			if(tableroInterfaz[x][y].isEnabled()) {
-			this.minasRestantes--;
+			if (tableroInterfaz[x][y].isEnabled()) {
+				this.minasRestantes--;
 			}
 		} else if (ruta.equals("bandera.gif")) {
 			actualizarCelda("interrogante.gif", x, y);
-			if(tableroInterfaz[x][y].isEnabled()) {
-			this.minasRestantes++;
+			if (tableroInterfaz[x][y].isEnabled()) {
+				this.minasRestantes++;
 			}
 		} else {
 			actualizarCelda("celda0.gif", x, y);
@@ -392,6 +421,27 @@ public class VentanaJuego extends JFrame {
 		int decenas = this.minasRestantes / 10;
 		actualizarContador(decenasMinas, decenas);
 		actualizarContador(unidadesMinas, unidades);
+	}
+
+	// Método para comprobar si es una victoria
+	private void comprobarVictoria(JButton[][] tableroInterfaz) {
+		boolean victoria = true;
+		for (int i = 0; i < filas; i++) {
+			for (int j = 0; j < columnas; j++) {
+				Icon icono = tableroInterfaz[i][j].getIcon();
+				ImageIcon iconoImg = (ImageIcon) icono;
+				String ruta = iconoImg.getDescription();
+
+				if (ruta.equals("celda0.gif") && ruta.equals("bandera.gif")) {
+					victoria = false;
+					break;
+				}
+			}
+		}
+
+		if (victoria) {
+			partidaGanada = true;
+		}
 	}
 
 	// Configura las propiedades de los botones del tablero
@@ -414,30 +464,32 @@ public class VentanaJuego extends JFrame {
 		iconLogo = new ImageIcon(scaledImage);
 		cifra.setIcon(iconLogo);
 	}
-	
+
 	public void temporizador() {
-	    // Crea un Timer que se ejecuta cada 1000 milisegundos (1 segundo)
-	    timer = new Timer(1000, new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	        	//Si el timepo es 999 la partida acaba
-	        	if(tiempo >= 999) {
-	        		finalizarPartida();
-	        	}
-	            tiempo++; // Aumenta el tiempo en 1 segundo
+		// Crea un Timer que se ejecuta cada 1000 milisegundos (1 segundo)
+		timer = new Timer(1000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Si el timepo es 999 la partida acaba
+				if (tiempo >= 999) {
+					finalizarPartida();
+				} else {
+					tiempo++; // Aumenta el tiempo en 1 segundo
 
-	            // Actualiza el temporizador visual (unidades, decenas, centenas)
-	            int unidad = tiempo % 10;
-	            int decena = (tiempo / 10) % 10;
-	            int centena = tiempo / 100;
+					// Actualiza el temporizador visual (unidades, decenas, centenas)
+					int unidad = tiempo % 10;
+					int decena = (tiempo / 10) % 10;
+					int centena = tiempo / 100;
 
-	            actualizarContador(temporizadorUd, unidad);
-	            actualizarContador(temporizadorDecenas, decena);
-	            actualizarContador(temporizadorCentenas, centena);
-	        }
-	    });
+					actualizarContador(temporizadorUd, unidad);
+					actualizarContador(temporizadorDecenas, decena);
+					actualizarContador(temporizadorCentenas, centena);
+				}
+			}
+		});
 
-	    // Inicia el temporizador
-	    timer.start();
+		// Inicia el temporizador
+		timer.start();
 	}
+
 }

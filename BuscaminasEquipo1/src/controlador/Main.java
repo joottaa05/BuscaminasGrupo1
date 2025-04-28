@@ -27,16 +27,17 @@ public class Main {
 		vis = new VentanaInicioSesion();
 		vis.setVisible(true);
 		
+		
 	}
 	
-	public static void abrirJuego(String usuario, Dificultad dificultad) { // Esta funcion sirve para abrir el juego
+	public static void abrirJuego(Usuario usuario, Dificultad dificultad) { // Esta funcion sirve para abrir el juego
 		
-		if(usuario == null || usuario.equals("")) {
+		if(usuario == null || usuario.getNombre().equals("")) {
 			System.out.println("No se ha introducido ningun nombre de usuario.");
 			System.out.println("Por favor, introduzca un nombre de usuario.");
 			
 		}else {
-			vj = new VentanaJuego(dificultad);
+			vj = new VentanaJuego(usuario, dificultad);
 			vis.setVisible(false);
 			vj.setVisible(true);
 		}

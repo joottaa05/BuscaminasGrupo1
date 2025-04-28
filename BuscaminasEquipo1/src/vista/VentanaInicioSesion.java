@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 import controlador.Main;
 import modelo.Dificultad;
+import modelo.Usuario;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -125,7 +126,8 @@ public class VentanaInicioSesion extends JFrame {
 		btnJugar.setForeground(new Color(49, 63, 79));
 		btnJugar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Main.abrirJuego(textFieldUsuario.getText(), Dificultad.valueOf(dificultad.getSelectedItem().toString()));
+				Usuario user = new Usuario(textFieldUsuario.getText(), 0);
+				Main.abrirJuego(user, Dificultad.valueOf(dificultad.getSelectedItem().toString()));
 			}
 		});
 		btnJugar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
