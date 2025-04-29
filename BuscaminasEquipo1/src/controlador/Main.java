@@ -47,7 +47,7 @@ public class Main {
 	public static void abrirClasificacion(Usuario user) { // Esta funcion sirve para abrir la clasificacion
 		
 		vc = new VentanaClasificacion(user);
-		vj.setVisible(false); // Cierra el juego
+		vj.dispose(); // Cierra el juego
 		vc.setVisible(true); // Abre la clasificacion
 		
 	}

@@ -248,7 +248,6 @@ public class VentanaJuego extends JFrame {
 								int numero = tablero.conseguirNumeroCasilla(tablero.getTablero(), x, y);
 								destaparCelda(x, y, numero);
 								celdasRestantes--;
-								System.out.println(celdasRestantes);
 								if (celdasRestantes == dificultad.getminas()) {
 									comprobarVictoria(tableroInterfaz);
 									if (partidaGanada) {
@@ -498,7 +497,7 @@ public class VentanaJuego extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Si el timepo es 999 la partida acaba
-				if (tiempo >= 999) {
+				if (tiempo >= 9) {
 					finalizarPartida();
 				} else {
 					tiempo++; // Aumenta el tiempo en 1 segundo

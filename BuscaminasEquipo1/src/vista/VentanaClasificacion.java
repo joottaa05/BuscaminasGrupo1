@@ -17,6 +17,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import java.awt.Color;
@@ -26,22 +30,43 @@ public class VentanaClasificacion extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private ArrayList<String> clasificacion = new ArrayList<>();
-
-	// Esto aun no se abre.
+	private HashMap<String, Integer> clasificacion = new HashMap<>();
 	
 	public VentanaClasificacion(Usuario user) {
 		BufferedReader br;
+		ArrayList<String> keys = null;
+        ArrayList<Integer> valores = null;
+        LinkedHashMap<String, Integer> mapOrdenado = null;
+        
 		try {
 			br = new BufferedReader(new FileReader("src/clasificacion.txt"));
 	        
 	        String linea;
+	        String nombre = "";
+	        Integer puntuacion = 0;
+	        
 	        while ((linea = br.readLine()) != null) {
-	        	clasificacion.add(linea);
+	        	nombre = linea.split(",")[0];
+	        	puntuacion = Integer.parseInt(linea.split(",")[1]);
+	        	clasificacion.put(nombre, puntuacion);
 	        }
 	        
+	        keys = new ArrayList<>(clasificacion.keySet());
+	        valores = new ArrayList<>(clasificacion.values());
 
-	        Collections.sort(clasificacion);
+	        Collections.sort(valores, Collections.reverseOrder()); 
+	        
+	        mapOrdenado = new LinkedHashMap<>();
+	        
+	        for (Integer valor : valores) {
+	            for (String clave : keys) {
+	                if (clasificacion.get(clave).equals(valor) && !mapOrdenado.containsKey(clave)) {
+	                	
+	                    mapOrdenado.put(clave, valor);
+	                    break;
+	                }
+	            }
+	        }
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -51,9 +76,6 @@ public class VentanaClasificacion extends JFrame {
 			e.printStackTrace();
 		}
         
-		for(String s: clasificacion) {
-			System.out.println(s);
-		}
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -100,11 +122,6 @@ public class VentanaClasificacion extends JFrame {
 		gbc_columnaPuesto.gridy = 0;
 		tabla.add(columnaPuesto, gbc_columnaPuesto);
 		
-		JLabel jLabelPuesto = new JLabel("Puesto");
-		jLabelPuesto.setFont(new Font("Tahoma", Font.BOLD, 10));
-		jLabelPuesto.setForeground(new Color(255, 255, 255));
-		columnaPuesto.add(jLabelPuesto);
-		
 		JPanel columnaUsuario = new JPanel();
 		columnaUsuario.setBackground(new Color(128, 128, 128));
 		GridBagConstraints gbc_columnaUsuario = new GridBagConstraints();
@@ -114,10 +131,6 @@ public class VentanaClasificacion extends JFrame {
 		gbc_columnaUsuario.gridy = 0;
 		tabla.add(columnaUsuario, gbc_columnaUsuario);
 		
-		JLabel jLabelUsuario = new JLabel("Usuario");
-		jLabelUsuario.setFont(new Font("Tahoma", Font.BOLD, 10));
-		jLabelUsuario.setForeground(new Color(255, 255, 255));
-		columnaUsuario.add(jLabelUsuario);
 		
 		JPanel columnaPuntuacion = new JPanel();
 		columnaPuntuacion.setBackground(new Color(128, 128, 128));
@@ -127,10 +140,45 @@ public class VentanaClasificacion extends JFrame {
 		gbc_columnaPuntuacion.gridy = 0;
 		tabla.add(columnaPuntuacion, gbc_columnaPuntuacion);
 		
-		JLabel jLabelPuntuacion = new JLabel("Puntuacion");
-		jLabelPuntuacion.setForeground(new Color(255, 255, 255));
-		jLabelPuntuacion.setFont(new Font("Tahoma", Font.BOLD, 10));
-		columnaPuntuacion.add(jLabelPuntuacion);
+
+		columnaPuesto.setLayout(new GridBagLayout());
+		columnaUsuario.setLayout(new GridBagLayout());
+		columnaPuntuacion.setLayout(new GridBagLayout());
+
+		Iterator<String> it2 = mapOrdenado.keySet().iterator();
+				
+		int fila = 0;
+
+		while (it2.hasNext()) {
+		    String nombreJugador = it2.next();
+		    Integer puntuacionJugador = mapOrdenado.get(nombreJugador);
+
+		    // Crear JLabel para el puesto
+		    JLabel labelPuesto = new JLabel((fila + 1) + ".");
+		    GridBagConstraints gbcPuesto = new GridBagConstraints();
+		    gbcPuesto.gridx = 0;
+		    gbcPuesto.gridy = fila;
+		    gbcPuesto.anchor = GridBagConstraints.WEST;
+		    columnaPuesto.add(labelPuesto, gbcPuesto);
+
+		    // Crear JLabel para el nombre del jugador
+		    JLabel labelNombre = new JLabel(nombreJugador);
+		    GridBagConstraints gbcNombre = new GridBagConstraints();
+		    gbcNombre.gridx = 0;
+		    gbcNombre.gridy = fila;
+		    gbcNombre.anchor = GridBagConstraints.WEST;
+		    columnaUsuario.add(labelNombre, gbcNombre);
+
+		    // Crear JLabel para la puntuación
+		    JLabel labelPuntuacion = new JLabel(puntuacionJugador.toString());
+		    GridBagConstraints gbcPuntuacion = new GridBagConstraints();
+		    gbcPuntuacion.gridx = 0;
+		    gbcPuntuacion.gridy = fila;
+		    gbcPuntuacion.anchor = GridBagConstraints.WEST;
+		    columnaPuntuacion.add(labelPuntuacion, gbcPuntuacion);
+
+		    fila++;
+		}
 	}
 
 }
