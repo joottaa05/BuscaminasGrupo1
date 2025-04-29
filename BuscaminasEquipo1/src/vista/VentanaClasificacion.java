@@ -99,7 +99,7 @@ public class VentanaClasificacion extends JFrame {
 		contentPane.add(jLabelClasificacion, gbc_jLabelClasificacion);
 		
 		JPanel tabla = new JPanel();
-		tabla.setBackground(new Color(192, 192, 192));
+		tabla.setBackground(new Color(180, 180, 180));
 		GridBagConstraints gbc_tabla = new GridBagConstraints();
 		gbc_tabla.insets = new Insets(0, 0, 5, 5);
 		gbc_tabla.fill = GridBagConstraints.BOTH;
@@ -114,8 +114,8 @@ public class VentanaClasificacion extends JFrame {
 		tabla.setLayout(gbl_tabla);
 		
 		JPanel columnaPuesto = new JPanel();
-		columnaPuesto.setBackground(new Color(128, 128, 128));
 		GridBagConstraints gbc_columnaPuesto = new GridBagConstraints();
+		columnaPuesto.setBackground(new Color(180, 180, 180));
 		gbc_columnaPuesto.insets = new Insets(0, 0, 0, 5);
 		gbc_columnaPuesto.fill = GridBagConstraints.BOTH;
 		gbc_columnaPuesto.gridx = 0;
@@ -123,8 +123,8 @@ public class VentanaClasificacion extends JFrame {
 		tabla.add(columnaPuesto, gbc_columnaPuesto);
 		
 		JPanel columnaUsuario = new JPanel();
-		columnaUsuario.setBackground(new Color(128, 128, 128));
 		GridBagConstraints gbc_columnaUsuario = new GridBagConstraints();
+		columnaUsuario.setBackground(new Color(180, 180, 180));
 		gbc_columnaUsuario.insets = new Insets(0, 0, 0, 5);
 		gbc_columnaUsuario.fill = GridBagConstraints.BOTH;
 		gbc_columnaUsuario.gridx = 1;
@@ -133,8 +133,8 @@ public class VentanaClasificacion extends JFrame {
 		
 		
 		JPanel columnaPuntuacion = new JPanel();
-		columnaPuntuacion.setBackground(new Color(128, 128, 128));
 		GridBagConstraints gbc_columnaPuntuacion = new GridBagConstraints();
+		columnaPuntuacion.setBackground(new Color(180, 180, 180));
 		gbc_columnaPuntuacion.fill = GridBagConstraints.BOTH;
 		gbc_columnaPuntuacion.gridx = 2;
 		gbc_columnaPuntuacion.gridy = 0;
@@ -144,34 +144,56 @@ public class VentanaClasificacion extends JFrame {
 		columnaPuesto.setLayout(new GridBagLayout());
 		columnaUsuario.setLayout(new GridBagLayout());
 		columnaPuntuacion.setLayout(new GridBagLayout());
-
+		
+		
+		JLabel labelPuesto = new JLabel("TOP");
+		GridBagConstraints gbcPuesto = new GridBagConstraints();
+	    gbcPuesto = new GridBagConstraints();
+	    gbcPuesto.gridx = 0;
+	    gbcPuesto.gridy = 0;
+	    gbcPuesto.anchor = GridBagConstraints.WEST;
+	    columnaPuesto.add(labelPuesto, gbcPuesto);
+		
+		JLabel labelNombre = new JLabel("JUGADOR");
+		GridBagConstraints gbcNombre = new GridBagConstraints();
+	    gbcPuesto = new GridBagConstraints();
+	    gbcPuesto.gridx = 0;
+	    gbcPuesto.gridy = 0;
+	    gbcPuesto.anchor = GridBagConstraints.WEST;
+	    columnaUsuario.add(labelNombre, gbcNombre);
+	    
+		JLabel labelPuntuacion = new JLabel("SCORE");
+	    GridBagConstraints gbcPuntuacion = new GridBagConstraints();
+	    gbcPuesto = new GridBagConstraints();
+	    gbcPuesto.gridx = 0;
+	    gbcPuesto.gridy = 0;
+	    gbcPuesto.anchor = GridBagConstraints.WEST;
+	    columnaPuntuacion.add(labelPuntuacion, gbcPuntuacion);
+	    
 		Iterator<String> it2 = mapOrdenado.keySet().iterator();
 				
-		int fila = 0;
+		int fila = 1;
 
 		while (it2.hasNext()) {
 		    String nombreJugador = it2.next();
 		    Integer puntuacionJugador = mapOrdenado.get(nombreJugador);
 
-		    // Crear JLabel para el puesto
-		    JLabel labelPuesto = new JLabel((fila + 1) + ".");
-		    GridBagConstraints gbcPuesto = new GridBagConstraints();
+		    labelPuesto = new JLabel((fila) + ".");
+		    gbcPuesto = new GridBagConstraints();
 		    gbcPuesto.gridx = 0;
 		    gbcPuesto.gridy = fila;
 		    gbcPuesto.anchor = GridBagConstraints.WEST;
 		    columnaPuesto.add(labelPuesto, gbcPuesto);
 
-		    // Crear JLabel para el nombre del jugador
-		    JLabel labelNombre = new JLabel(nombreJugador);
-		    GridBagConstraints gbcNombre = new GridBagConstraints();
+		    labelNombre = new JLabel(nombreJugador);
+		    gbcNombre = new GridBagConstraints();
 		    gbcNombre.gridx = 0;
 		    gbcNombre.gridy = fila;
 		    gbcNombre.anchor = GridBagConstraints.WEST;
 		    columnaUsuario.add(labelNombre, gbcNombre);
 
-		    // Crear JLabel para la puntuación
-		    JLabel labelPuntuacion = new JLabel(puntuacionJugador.toString());
-		    GridBagConstraints gbcPuntuacion = new GridBagConstraints();
+		    labelPuntuacion = new JLabel(puntuacionJugador.toString());
+		    gbcPuntuacion = new GridBagConstraints();
 		    gbcPuntuacion.gridx = 0;
 		    gbcPuntuacion.gridy = fila;
 		    gbcPuntuacion.anchor = GridBagConstraints.WEST;
