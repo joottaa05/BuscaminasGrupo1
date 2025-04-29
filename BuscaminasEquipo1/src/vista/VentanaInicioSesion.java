@@ -13,6 +13,8 @@ import modelo.Usuario;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JTextField;
@@ -34,9 +36,6 @@ public class VentanaInicioSesion extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textFieldUsuario;
-
-	// Falta hacer funcionar el boton Salir (en los requisitos del proyecto pedia
-	// hacer este boton).
 
 	public VentanaInicioSesion() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -145,9 +144,12 @@ public class VentanaInicioSesion extends JFrame {
 							}
 						}
 						
-						if(!nombreRepetido) {
+						if(!nombreRepetido && !textFieldUsuario.getText().equals("") && textFieldUsuario != null) {
 						Usuario user = new Usuario(textFieldUsuario.getText());
 						Main.abrirJuego(user, Dificultad.valueOf(dificultad.getSelectedItem().toString()));
+						} else {
+				            JOptionPane.showMessageDialog(VentanaInicioSesion.this, "El nombre esta vacio o repetido, por favor, introduzca otro nombre de usuario distinto.");
+
 						}
 						
 				} catch (FileNotFoundException e1) {

@@ -497,7 +497,8 @@ public class VentanaJuego extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Si el timepo es 999 la partida acaba
-				if (tiempo >= 9) {
+				if (tiempo >= 999) {
+		            JOptionPane.showMessageDialog(VentanaJuego.this, "Tiempo limite excedido. GAME OVER.");
 					finalizarPartida();
 				} else {
 					tiempo++; // Aumenta el tiempo en 1 segundo

@@ -1,5 +1,7 @@
 package controlador;
 
+import javax.swing.JOptionPane;
+
 import modelo.Casilla;
 import modelo.Dificultad;
 import modelo.Tablero;
@@ -32,16 +34,9 @@ public class Main {
 	
 	public static void abrirJuego(Usuario usuario, Dificultad dificultad) { // Esta funcion sirve para abrir el juego
 		
-		if(usuario == null || usuario.getNombre().equals("")) {
-			System.out.println("No se ha introducido ningun nombre de usuario.");
-			System.out.println("Por favor, introduzca un nombre de usuario.");
-			
-		}else {
 			vj = new VentanaJuego(usuario, dificultad);
 			vis.setVisible(false);
 			vj.setVisible(true);
-		}
-		
 	}
 	
 	public static void abrirClasificacion(Usuario user) { // Esta funcion sirve para abrir la clasificacion
